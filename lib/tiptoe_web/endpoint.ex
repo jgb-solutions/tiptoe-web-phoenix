@@ -1,12 +1,12 @@
 defmodule TipToeWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :tip_toe
+  use Phoenix.Endpoint, otp_app: :tiptoe
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
   @session_options [
     store: :cookie,
-    key: "_tip_toe_key",
+    key: "_tiptoe_key",
     signing_salt: "j3pPGpn+"
   ]
 
@@ -22,7 +22,7 @@ defmodule TipToeWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from: :tip_toe,
+    from: :tiptoe,
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
@@ -32,7 +32,7 @@ defmodule TipToeWeb.Endpoint do
     socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
-    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :tip_toe
+    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :tiptoe
   end
 
   plug Phoenix.LiveDashboard.RequestLogger,

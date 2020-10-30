@@ -11,7 +11,12 @@ defmodule TipToeWeb.Router do
   end
 
   pipeline :api do
+    plug CORSPlug, origin: "*"
     plug :accepts, ["json"]
+  end
+
+  pipeline :graphql do
+    plug TipToe.Context
   end
 
   scope "/", TipToeWeb do
@@ -20,10 +25,22 @@ defmodule TipToeWeb.Router do
     live "/", PageLive, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", TipToeWeb do
-  #   pipe_through :api
-  # end
+  scope "/api" do
+    pipe_through :api
+
+    scope "/graphql" do
+      pipe_through :graphql
+
+      if Mix.env() == :dev do
+        forward "/playground", Absinthe.Plug.GraphiQL,
+          schema: TipToeWeb.GraphQL.Schema,
+          interface: :playground,
+          socket: TipToeWeb.UserSocket
+      end
+
+      forward "/", Absinthe.Plug, schema: TipToeWeb.GraphQL.Schema
+    end
+  end
 
   # Enables LiveDashboard only for development
   #

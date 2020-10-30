@@ -44,10 +44,10 @@ RUN chown nobody:nobody /app
 
 USER nobody:nobody
 
-COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/tip_toe ./
+COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/tiptoe ./
 
 ENV HOME=/app
 ENV DOMAIN=https://tiptoe.app
 EXPOSE 4000
 
-CMD ["bin/tip_toe", "start"]
+CMD ["bin/tiptoe", "start"]

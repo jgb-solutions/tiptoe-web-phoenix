@@ -20,5 +20,5 @@ defmodule TipToeWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :tip_toe
+  use Gettext, otp_app: :tiptoe
 end

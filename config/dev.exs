@@ -1,10 +1,10 @@
 use Mix.Config
 
 # Configure your database
-config :tip_toe, TipToe.Repo,
+config :tiptoe, TipToe.Repo,
   username: "jeangerard",
   password: "asdf,,,",
-  database: "tip_toe_dev",
+  database: "tiptoe_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -15,7 +15,7 @@ config :tip_toe, TipToe.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
-config :tip_toe, TipToeWeb.Endpoint,
+config :tiptoe, TipToeWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
@@ -55,13 +55,13 @@ config :tip_toe, TipToeWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :tip_toe, TipToeWeb.Endpoint,
+config :tiptoe, TipToeWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/tip_toe_web/(live|views)/.*(ex)$",
-      ~r"lib/tip_toe_web/templates/.*(eex)$"
+      ~r"lib/tiptoe_web/(live|views)/.*(ex)$",
+      ~r"lib/tiptoe_web/templates/.*(eex)$"
     ]
   ]
 

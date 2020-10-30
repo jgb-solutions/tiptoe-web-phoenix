@@ -31,11 +31,11 @@ defmodule TipToeWeb.Telemetry do
       ),
 
       # Database Metrics
-      summary("tip_toe.repo.query.total_time", unit: {:native, :millisecond}),
-      summary("tip_toe.repo.query.decode_time", unit: {:native, :millisecond}),
-      summary("tip_toe.repo.query.query_time", unit: {:native, :millisecond}),
-      summary("tip_toe.repo.query.queue_time", unit: {:native, :millisecond}),
-      summary("tip_toe.repo.query.idle_time", unit: {:native, :millisecond}),
+      summary("tiptoe.repo.query.total_time", unit: {:native, :millisecond}),
+      summary("tiptoe.repo.query.decode_time", unit: {:native, :millisecond}),
+      summary("tiptoe.repo.query.query_time", unit: {:native, :millisecond}),
+      summary("tiptoe.repo.query.queue_time", unit: {:native, :millisecond}),
+      summary("tiptoe.repo.query.idle_time", unit: {:native, :millisecond}),
 
       # VM Metrics
       summary("vm.memory.total", unit: {:byte, :kilobyte}),

@@ -30,7 +30,7 @@ defmodule TipToeWeb do
   def view do
     quote do
       use Phoenix.View,
-        root: "lib/tip_toe_web/templates",
+        root: "lib/tiptoe_web/templates",
         namespace: TipToeWeb
 
       # Import convenience functions from controllers
