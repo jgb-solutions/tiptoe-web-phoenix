@@ -12,7 +12,7 @@ defmodule TipToe.Repo.Migrations.AddPhotosTable do
       add :user_id, :integer, null: false
       add :model_id, :integer, null: false
       add :category_id, :integer, null: false
-      add :view_count, :integer, default: 0
+      add :like_count, :integer, default: 0
       add :publish, :boolean, default: true
 
       timestamps()

@@ -43,11 +43,11 @@ defmodule TipToeWeb.Resolvers.Photo do
         limit: ^take,
         order_by: fragment("RANDOM()")
 
-    photos_with_poster_url =
+    photos_with_url =
       Repo.all(q)
       |> Enum.map(&Photo.with_url(&1))
 
-    {:ok, photos_with_poster_url}
+    {:ok, photos_with_url}
   end
 
   def find_by_hash(args, _resolution) do

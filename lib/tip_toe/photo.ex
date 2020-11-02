@@ -17,7 +17,7 @@ defmodule TipToe.Photo do
     field :img_bucket, :string, null: false
     field :featured, :boolean, default: false
     field :detail, :string
-    field :view_count, :integer, default: 0
+    field :like_count, :integer, default: 0
     field :publish, :boolean, default: true
     field :url, :string, virtual: true
 
@@ -40,7 +40,7 @@ defmodule TipToe.Photo do
       :user_id,
       :model_id,
       :category_id,
-      :view_count,
+      :like_count,
       :publish
     ])
     |> validate_required([
@@ -72,6 +72,14 @@ defmodule TipToe.Photo do
   end
 
   def with_url(%__MODULE__{} = photo) do
-    %{photo | url: make_url(photo)}
+    photo_with_url = %{
+      photo
+      | url: make_url(photo)
+    }
+
+    case Map.has_key?(photo, :model) do
+      true -> Map.put(photo_with_url, :model, Model.with_poster_url(photo.model))
+      _ -> photo_with_url
+    end
   end
 end
