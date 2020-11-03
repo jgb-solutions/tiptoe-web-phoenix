@@ -24,7 +24,7 @@ defmodule TipToe.User do
     timestamps()
 
     has_many :photos, Photo
-    has_many :artists, Model
+    has_one(:model, Model)
   end
 
   def changeset(%__MODULE__{} = user, attrs) do
@@ -35,9 +35,9 @@ defmodule TipToe.User do
       :password,
       :telephone,
       :facebook_link,
-      :fb_avatar,
+      # :fb_avatar,
       :avatar,
-      :facebook_id,
+      # :facebook_id,
       :admin,
       :active,
       :first_login,
@@ -83,7 +83,8 @@ defmodule TipToe.User do
     if user.avatar do
       "https://" <> user.img_bucket <> "/" <> user.avatar
     else
-      user.fb_avatar
+      # user.fb_avatar
+      ""
     end
   end
 

@@ -13,6 +13,7 @@ defmodule TipToe.Application do
       TipToeWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: TipToe.PubSub},
+      TipToeWeb.Presence,
       # Start the Endpoint (http/https)
       TipToeWeb.Endpoint
       # Start a worker by calling: TipToe.Worker.start_link(arg)

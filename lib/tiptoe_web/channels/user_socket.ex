@@ -3,6 +3,7 @@ defmodule TipToeWeb.UserSocket do
 
   ## Channels
   channel "notifications", TipToeWeb.NotificationsChannel
+  channel "room:*", TipToeWeb.RoomChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

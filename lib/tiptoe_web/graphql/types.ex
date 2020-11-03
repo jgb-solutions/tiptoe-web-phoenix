@@ -12,7 +12,7 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :active, :boolean
     field :first_login, :boolean
     field :photos, list_of(:photo)
-    field :models, list_of(:model)
+    field :model, :model
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
   end
