@@ -4,15 +4,16 @@ defmodule TipToeWeb.RoomChannel do
 
   def join("room:" <> _room, _params, socket) do
     send(self(), :after_join)
+
     {:ok, socket}
   end
 
   def handle_in(
-        "new_msg",
+        "new_message",
         %{
-          text: text,
-          userId: user_id,
-          createdAt: createdAt
+          "text" => text,
+          "userId" => user_id,
+          "createdAt" => createdAt
         } = params,
         socket
       ) do
@@ -20,25 +21,13 @@ defmodule TipToeWeb.RoomChannel do
       id: Enum.random(1..20000),
       text: text,
       user: %{
-        id: user_id + Enum.random(1..5000),
+        id: user_id,
         name: "Some name"
       },
       createdAt: createdAt
     }
 
-    # TipToeWeb.Endpoint.broadcast(
-    #   "room:general",
-    #   "new_msg",
-    #   %{
-    #     text: "Some text",
-    #     createdAt: "2010-12-03",
-    #     user: %{
-    #       id: Enum.random(1..500),
-    #       name: "Some user"
-    #       },
-    #     id: Enum.random(500..5000)
-    #   })
-    push(socket, "new_msg", params)
+    broadcast_from!(socket, "new_message", new_params)
 
     {:noreply, socket}
   end
@@ -53,4 +42,18 @@ defmodule TipToeWeb.RoomChannel do
     push(socket, "presence_state", Presence.list(socket))
     {:noreply, socket}
   end
+
+  # TipToeWeb.Endpoint.broadcast(
+  #   "room:general",
+  #   "new_message",
+  #   %{
+  #     text: "Some message" <> Integer.to_string(Enum.random(111..9_234_234)),
+  #     createdAt: "2010-12-03",
+  #     user: %{
+  #       id: Enum.random(1..500),
+  #       name: "Some user"
+  #     },
+  #     id: Enum.random(500..5000)
+  #   }
+  # )
 end
