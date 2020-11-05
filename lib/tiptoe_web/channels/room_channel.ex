@@ -1,47 +1,69 @@
 defmodule TipToeWeb.RoomChannel do
   use Phoenix.Channel
   alias TipToeWeb.Presence
+  alias TipToe.Chats
 
   def join("room:" <> _room, _params, socket) do
-    send(self(), :after_join)
+    # send(self(), :after_join)
+    messages =
+      Enum.map(Chats.list_messages(), fn message ->
+        %{
+          id: message.id,
+          text: message.text,
+          createdAt: message.inserted_at,
+          user: %{
+            id: message.user.id,
+            name: message.user.name,
+            avatar: message.user.avatar_url
+          }
+        }
+      end)
 
-    {:ok, socket}
+    {:ok,
+     %{
+       messages: Jason.encode!(messages)
+     }, socket}
   end
 
   def handle_in(
         "new_message",
         %{
           "text" => text,
-          "userId" => user_id,
-          "createdAt" => createdAt
-        } = params,
+          "userId" => user_id
+          # "roomId" => room_id
+        },
         socket
       ) do
-    new_params = %{
-      id: Enum.random(1..20000),
+    message =
+      Chats.create_message(%{
+        text: text,
+        user_id: user_id
+        # room_id: room_id
+      })
+
+    broadcast_from!(socket, "new_message", %{
+      id: message.id,
       text: text,
       user: %{
         id: user_id,
-        name: "Some name"
+        name: message.user.name
       },
-      createdAt: createdAt
-    }
-
-    broadcast_from!(socket, "new_message", new_params)
+      createdAt: message.inserted_at
+    })
 
     {:noreply, socket}
   end
 
-  def handle_info(:after_join, socket) do
-    # socket.assigns.user_id
-    {:ok, _} =
-      Presence.track(socket, 1, %{
-        online_at: inspect(System.system_time(:second))
-      })
+  # def handle_info(:after_join, socket) do
+  #   # socket.assigns.user_id
+  #   {:ok, _} =
+  #     Presence.track(socket, 1, %{
+  #       online_at: inspect(System.system_time(:second))
+  #     })
 
-    push(socket, "presence_state", Presence.list(socket))
-    {:noreply, socket}
-  end
+  #   push(socket, "presence_state", Presence.list(socket))
+  #   {:noreply, socket}
+  # end
 
   # TipToeWeb.Endpoint.broadcast(
   #   "room:general",
