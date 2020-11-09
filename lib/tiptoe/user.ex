@@ -4,7 +4,6 @@ defmodule TipToe.User do
   import Ecto.Query
   import Ecto.Changeset
   alias TipToe.User
-  alias TipToe.Genre
   alias TipToe.Photo
   alias TipToe.Model
 

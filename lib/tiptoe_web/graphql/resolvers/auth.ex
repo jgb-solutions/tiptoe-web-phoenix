@@ -14,7 +14,7 @@ defmodule TipToeWeb.Resolvers.Auth do
       token =
         Phoenix.Token.sign(
           TipToeWeb.Endpoint,
-          Application.fetch_env!(:TipToe, :auth_salt),
+          Application.fetch_env!(:tiptoe, :auth_salt),
           user.id
         )
 

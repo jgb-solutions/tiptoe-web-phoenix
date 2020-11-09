@@ -23,8 +23,8 @@ defmodule TipToe.Context do
   end
 
   defp authorize(token) do
-    salt = Application.fetch_env!(:TipToe, :auth_salt)
-    max_age = Application.fetch_env!(:TipToe, :auth_max_age)
+    salt = Application.fetch_env!(:tiptoe, :auth_salt)
+    max_age = Application.fetch_env!(:tiptoe, :auth_max_age)
 
     case Phoenix.Token.verify(TipToeWeb.Endpoint, salt, token, max_age: max_age) do
       {:ok, user_id} ->
