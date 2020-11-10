@@ -62,8 +62,6 @@ defmodule TipToeWeb.Resolvers.Photo do
           :ok,
           photo
           |> Photo.with_url()
-          |> Photo.with_audio_url()
-          |> Map.update!(:audio_file_size, &Size.humanize!(String.to_integer(&1)))
         }
 
       nil ->

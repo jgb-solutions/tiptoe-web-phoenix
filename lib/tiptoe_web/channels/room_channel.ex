@@ -1,23 +1,12 @@
 defmodule TipToeWeb.RoomChannel do
   use Phoenix.Channel
-  alias TipToeWeb.Presence
+  # alias TipToeWeb.Presence
   alias TipToe.Chats
+  alias TipToe.User
 
   def join("room:" <> _room, _params, socket) do
     # send(self(), :after_join)
-    messages =
-      Enum.map(Chats.list_messages(), fn message ->
-        %{
-          id: message.id,
-          text: message.text,
-          createdAt: message.inserted_at,
-          user: %{
-            id: message.user.id,
-            name: message.user.name,
-            avatar: message.user.avatar_url
-          }
-        }
-      end)
+    messages = Enum.map(Chats.list_messages(), &mapMessageToResponse(&1))
 
     {:ok,
      %{
@@ -41,17 +30,22 @@ defmodule TipToeWeb.RoomChannel do
         # room_id: room_id
       })
 
-    broadcast_from!(socket, "new_message", %{
-      id: message.id,
-      text: text,
-      user: %{
-        id: user_id,
-        name: message.user.name
-      },
-      createdAt: message.inserted_at
-    })
+    broadcast_from!(socket, "new_message", mapMessageToResponse(message))
 
     {:noreply, socket}
+  end
+
+  defp mapMessageToResponse(message) do
+    %{
+      id: message.id,
+      text: message.text,
+      createdAt: message.inserted_at,
+      user: %{
+        id: message.user.id,
+        name: message.user.name,
+        avatar_url: User.make_avatar_url(message.user)
+      }
+    }
   end
 
   # def handle_info(:after_join, socket) do

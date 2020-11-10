@@ -9,7 +9,6 @@ defmodule TipToe.Repo.Migrations.AddPhotosTable do
       add :img_bucket, :string, null: false
       add :featured, :boolean, default: false
       add :detail, :text
-      add :user_id, :integer, null: false
       add :model_id, :integer, null: false
       add :category_id, :integer, null: false
       add :like_count, :integer, default: 0

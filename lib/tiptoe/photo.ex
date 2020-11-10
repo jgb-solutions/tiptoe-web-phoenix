@@ -3,12 +3,11 @@ defmodule TipToe.Photo do
   import Ecto.Query
   alias TipToe.Repo
   import Ecto.Changeset
-  alias TipToe.User
   alias TipToe.Category
   alias TipToe.Photo
   alias TipToe.Model
 
-  @default_url "https://img-storage-prod.tiptoe.app/placeholders/photo-placeholder.jpg"
+  @default_avatar_url "https://img-storage-prod.tiptoe.app/placeholders/photo-placeholder.jpg"
 
   schema "photos" do
     field :caption, :string, null: false
@@ -23,7 +22,6 @@ defmodule TipToe.Photo do
 
     timestamps()
 
-    belongs_to :user, User
     belongs_to :model, Model
     belongs_to :category, Category
   end
@@ -37,7 +35,6 @@ defmodule TipToe.Photo do
       :img_bucket,
       :featured,
       :detail,
-      :user_id,
       :model_id,
       :category_id,
       :like_count,
@@ -48,7 +45,6 @@ defmodule TipToe.Photo do
       :hash,
       :uri,
       :img_bucket,
-      :user_id,
       :model_id,
       :category_id
     ])
@@ -67,7 +63,7 @@ defmodule TipToe.Photo do
     if photo do
       "https://" <> photo.img_bucket <> "/" <> photo.uri
     else
-      @default_url
+      @default_avatar_url
     end
   end
 

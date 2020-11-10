@@ -126,7 +126,6 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :uri, non_null(:string)
     field :detail, :string
     field :lyrics, :string
-    field :audioFileSize, non_null(:integer)
     field :modelId, non_null(:integer)
     field :categoryId, non_null(:integer)
     field :img_bucket, non_null(:string)

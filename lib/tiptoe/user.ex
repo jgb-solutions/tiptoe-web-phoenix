@@ -7,6 +7,8 @@ defmodule TipToe.User do
   alias TipToe.Photo
   alias TipToe.Model
 
+  @default_avatar_url "https://placeimg.com/140/140/any"
+
   schema "users" do
     field :name, :string, null: false
     field :email, :string, size: 60, unique: true
@@ -22,8 +24,7 @@ defmodule TipToe.User do
 
     timestamps()
 
-    has_many :photos, Photo
-    has_one(:model, Model)
+    has_one :model, Model
   end
 
   def changeset(%__MODULE__{} = user, attrs) do
@@ -34,9 +35,7 @@ defmodule TipToe.User do
       :password,
       :telephone,
       :facebook_link,
-      # :fb_avatar,
       :avatar,
-      # :facebook_id,
       :admin,
       :active,
       :first_login,
@@ -82,8 +81,7 @@ defmodule TipToe.User do
     if user.avatar do
       "https://" <> user.img_bucket <> "/" <> user.avatar
     else
-      # user.fb_avatar
-      ""
+      @default_avatar_url
     end
   end
 

@@ -31,7 +31,7 @@ defmodule TipToe.Model do
   end
 
   @doc false
-  def changeset(model, attrs) do
+  def changeset(%__MODULE__{} = model, attrs) do
     model
     |> cast(attrs, [])
     |> validate_required([])

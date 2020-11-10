@@ -30,16 +30,11 @@ defmodule TipToeWeb.Resolvers.Model do
       from t in Photo,
         order_by: [desc: t.inserted_at]
 
-    albums_query =
-      from t in Album,
-        order_by: [desc: t.inserted_at]
-
     q =
       from a in Model,
         where: a.hash == ^args.hash,
         preload: [
-          photos: ^photos_query,
-          albums: ^albums_query
+          photos: ^photos_query
         ],
         limit: 1
 
@@ -53,12 +48,6 @@ defmodule TipToeWeb.Resolvers.Model do
               Enum.map(model_with_cover_url.photos, fn photo ->
                 photo
                 |> Photo.with_url()
-                |> Photo.with_audio_url()
-              end),
-            albums:
-              Enum.map(model_with_cover_url.albums, fn album ->
-                album
-                |> Album.with_cover_url()
               end)
         }
 
