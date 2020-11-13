@@ -15,7 +15,8 @@ defmodule TipToeWeb.Resolvers.Auth do
         Phoenix.Token.sign(
           TipToeWeb.Endpoint,
           Application.fetch_env!(:tiptoe, :auth_salt),
-          user.id
+          user.id,
+          max_age: Application.fetch_env!(:tiptoe, :auth_max_age)
         )
 
       response = %{

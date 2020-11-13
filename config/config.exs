@@ -40,7 +40,7 @@ config :ex_aws,
 
 config :tiptoe,
   auth_salt: "qr0k5WcsL2+XO2g44Wf135AA2EB7QWZVm7TTcbmUiewIkCa9V408YselnPunPMNo",
-  auth_max_age: 24 * 60 * 60
+  auth_max_age: 6 * 30 * 24 * 60 * 60
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

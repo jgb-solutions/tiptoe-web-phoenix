@@ -10,8 +10,7 @@ defmodule TipToeWeb.UserSocket do
     case Phoenix.Token.verify(
            socket,
            Application.fetch_env!(:tiptoe, :auth_salt),
-           token,
-           max_age: Application.fetch_env!(:tiptoe, :auth_max_age)
+           token
          ) do
       {:ok, user_id} ->
         {:ok, assign(socket, :current_user, user_id)}

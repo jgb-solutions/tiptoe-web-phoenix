@@ -12,7 +12,7 @@ defmodule TipToeWeb.Resolvers.User do
 
     q =
       from RepoHelper.latest(User),
-        preload: [:model, :photos]
+        preload: [:model]
 
     paginated_users =
       q

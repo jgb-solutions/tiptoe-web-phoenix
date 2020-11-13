@@ -4,7 +4,6 @@ defmodule TipToe.User do
   import Ecto.Query
   import Ecto.Changeset
   alias TipToe.User
-  alias TipToe.Photo
   alias TipToe.Model
 
   @default_avatar_url "https://placeimg.com/140/140/any"
