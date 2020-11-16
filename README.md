@@ -1,20 +1,13 @@
 # TipToe
 
-To start your Phoenix server:
+To run migration in prod:
+DATABASE_URL=ecto://jeangerard:asdf,,,@localhost/tiptoe_prod SECRET_KEY_BASE="pmXOigSHtxhqwd9t9JDen3mg+UEGwofWmI5hyiVPAqZsF92BD2Syybq7FaDtG2fd" \_build/prod/rel/tiptoe/bin/tiptoe eval "TipToe.Release.migrate"
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `npm install` inside the `assets` directory
-  * Start Phoenix endpoint with `mix phx.server`
+To run seed in prod:
+DATABASE_URL=ecto://jeangerard:asdf,,,@localhost/tiptoe_prod SECRET_KEY_BASE="pmXOigSHtxhqwd9t9JDen3mg+UEGwofWmI5hyiVPAqZsF92BD2Syybq7FaDtG2fd" \_build/prod/rel/tiptoe/bin/tiptoe eval "TipToe.Release.seed"
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+To run from Docker:
+docker run --network host --name="tiptoe" --restart always --env SECRET_KEY_BASE=Rcn1irdCzqk2HRiMt7apey+PYvYnq2mecWlnAIZ+55cmWKnTfjt1pwq5zHWcGpai --env PORT=4000 --env DATABASE_URL=ecto://tiptoe:tiptoeg@localhost/tiptoe -d jgbsolutions/tiptoe:0.0.1
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
-
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+To log into the Docker container:
+docker exec -it tiptoe /bin/ash

@@ -1,8 +1,4 @@
-# In this file, we load production configuration and secrets
-# from environment variables. You can also hardcode secrets,
-# although such is generally not recommended and you have to
-# remember to add this file to your .gitignore.
-use Mix.Config
+import Config
 
 database_url =
   System.get_env("DATABASE_URL") ||
@@ -30,12 +26,7 @@ config :tiptoe, TipToeWeb.Endpoint,
   ],
   secret_key_base: secret_key_base
 
-# ## Using releases (Elixir v1.9+)
-#
-# If you are doing OTP releases, you need to instruct Phoenix
-# to start each relevant endpoint:
-#
-#     config :tiptoe, TipToeWeb.Endpoint, server: true
-#
-# Then you can assemble a release by calling `mix release`.
-# See `mix help release` for more information.
+config :tiptoe, TipToeWeb.Endpoint,
+  server: true,
+  # check_origin: ["tiptoe.app", "localhost"]
+  check_origin: false
