@@ -24,10 +24,10 @@ defmodule TipToe.Model do
     field :verified, :boolean, default: false
     field :poster_url, :string, virtual: true
 
-    timestamps()
-
     has_many :photos, Photo
     belongs_to :user, User
+
+    timestamps()
   end
 
   @doc false

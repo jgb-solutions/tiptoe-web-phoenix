@@ -5,6 +5,7 @@ defmodule TipToe.User do
   import Ecto.Changeset
   alias TipToe.User
   alias TipToe.Model
+  alias TipToe.Room
 
   @default_avatar_url "https://placeimg.com/140/140/any"
 
@@ -24,6 +25,7 @@ defmodule TipToe.User do
     timestamps()
 
     has_one :model, Model
+    has_many :rooms, Room
   end
 
   def changeset(%__MODULE__{} = user, attrs) do

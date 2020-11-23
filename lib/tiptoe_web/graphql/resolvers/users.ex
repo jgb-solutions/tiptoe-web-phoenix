@@ -4,6 +4,8 @@ defmodule TipToeWeb.Resolvers.User do
   alias TipToe.RepoHelper
   alias TipToe.User
   alias TipToe.Model
+  alias TipToe.Room
+  alias TipToe.Message
   alias TipToeWeb.Resolvers.Auth
 
   def paginate(args, _resolution) do
@@ -29,14 +31,65 @@ defmodule TipToeWeb.Resolvers.User do
   end
 
   def me(_, %{context: %{current_user: user}}) do
-    models_query =
-      from a in Model,
-        where: a.user_id == ^user.id,
-        order_by: [asc: :stage_name]
+    model_query =
+      from m in Model,
+        where: m.user_id == ^user.id,
+        limit: 1
 
-    models_by_stage_name = Repo.all(models_query)
+    user_model = Repo.one(model_query)
 
-    {:ok, %{user | models: models_by_stage_name}}
+    messages_query =
+      from m in Message,
+        order_by: [desc: :inserted_at],
+        limit: 1
+
+    rooms_query =
+      from r in Room,
+        where: r.user_id == ^user.id,
+        order_by: [desc: :inserted_at],
+        preload: [messages: ^messages_query]
+
+    room_with_chat_user_query =
+      case user_model do
+        nil ->
+          model_query =
+            from m in Model,
+              preload: [:user]
+
+          from r in rooms_query,
+            preload: [model: ^model_query]
+
+        _model ->
+          from r in rooms_query,
+            preload: [:user]
+      end
+
+    rooms = Repo.all(room_with_chat_user_query)
+
+    rooms =
+      case user_model do
+        nil ->
+          Enum.map(rooms, fn room ->
+            IO.inspect(room.model)
+
+            Map.put(
+              room,
+              :chat_user,
+              room.model.user
+            )
+          end)
+
+        _model ->
+          Enum.map(rooms, fn room ->
+            Map.put(
+              room,
+              :chat_user,
+              room.user
+            )
+          end)
+      end
+
+    {:ok, %{user | rooms: rooms}}
   end
 
   def me(_, _) do

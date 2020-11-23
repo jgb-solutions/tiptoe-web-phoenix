@@ -1,6 +1,6 @@
 defmodule TipToeWeb.GraphQL.Schema.Types do
   use Absinthe.Schema.Notation
-  alias Absinthe.Blueprint.Schema
+
   # Object
   object :user do
     field :id, :id
@@ -12,6 +12,7 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :active, :boolean
     field :first_login, :boolean
     field :photos, list_of(:photo)
+    field :rooms, list_of(:room)
     field :model, :model
     field :inserted_at, :naive_datetime
     field :updated_at, :naive_datetime
@@ -47,6 +48,28 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :like_count, non_null(:integer)
     field :inserted_at, non_null(:naive_datetime)
     field :updated_at, non_null(:naive_datetime)
+  end
+
+  object :message do
+    field :id, :id
+    field :text, :string
+    field :user, :user
+    field :inserted_at, non_null(:naive_datetime)
+    field :updated_at, non_null(:naive_datetime)
+  end
+
+  object :room do
+    field :id, :id
+    field :chat_user, :chat_user
+    field :messages, list_of(:message)
+    field :inserted_at, non_null(:naive_datetime)
+    field :updated_at, non_null(:naive_datetime)
+  end
+
+  object :chat_user do
+    field :id, :id
+    field :name, :string
+    field :avatar_url, :string
   end
 
   object :category do
@@ -101,6 +124,11 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
   object :paginate_models do
     import_fields(:paginate)
     field :data, list_of(:model)
+  end
+
+  object :paginate_messages do
+    import_fields(:paginate)
+    field :data, list_of(:message)
   end
 
   object :paginate_photos do

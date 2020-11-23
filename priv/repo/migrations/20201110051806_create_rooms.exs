@@ -3,9 +3,10 @@ defmodule Tiptoe.Repo.Migrations.CreateRooms do
 
   def change do
     create table(:rooms) do
+      add :user_id, :integer, null: false
+      add :model_id, :integer, null: false
 
-      timestamps()
+      timestamps(updated_at: false)
     end
-
   end
 end
