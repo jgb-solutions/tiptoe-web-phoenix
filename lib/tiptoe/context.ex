@@ -28,7 +28,7 @@ defmodule TipToe.Context do
 
     case Phoenix.Token.verify(TipToeWeb.Endpoint, salt, token, max_age: max_age) do
       {:ok, user_id} ->
-        case Repo.get!(User, user_id) do
+        case Repo.get(User, user_id) do
           nil ->
             {:error, "The user for this token is either deleted or never existed on our servers."}
 

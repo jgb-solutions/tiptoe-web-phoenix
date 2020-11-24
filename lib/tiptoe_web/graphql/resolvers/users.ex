@@ -75,7 +75,11 @@ defmodule TipToeWeb.Resolvers.User do
             Map.put(
               room,
               :chat_user,
-              room.model.user
+              %{
+                id: room.model.id,
+                name: room.model.stage_name,
+                avatar_url: Model.make_poster_url(room.model)
+              }
             )
           end)
 
@@ -84,7 +88,11 @@ defmodule TipToeWeb.Resolvers.User do
             Map.put(
               room,
               :chat_user,
-              room.user
+              %{
+                id: room.user.id,
+                name: room.user.name,
+                avatar_url: User.make_avatar_url(room.user)
+              }
             )
           end)
       end

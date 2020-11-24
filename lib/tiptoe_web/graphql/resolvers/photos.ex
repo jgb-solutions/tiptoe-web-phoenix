@@ -8,11 +8,11 @@ defmodule TipToeWeb.Resolvers.Photo do
   alias Size
   alias TipToe.Cache
 
-  def paginate(args, _resolution) do
+  def paginate(args, %{context: %{current_user: _current_user}}) do
     page = args[:page] || 1
     page_size = args[:take] || 20
 
-    key = "photos_page_" <> to_string(page)
+    _key = "photos_page_" <> to_string(page)
 
     q =
       from RepoHelper.latest(Photo, :inserted_at),
@@ -34,6 +34,12 @@ defmodule TipToeWeb.Resolvers.Photo do
 
     {:ok, data}
   end
+
+  def paginate(_args, _resolution),
+    do: {
+      :error,
+      message: "You Need to login", code: 401
+    }
 
   def related_photos(%{input: %{hash: hash, take: take}}, _resolution) do
     q =

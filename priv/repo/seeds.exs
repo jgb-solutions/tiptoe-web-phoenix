@@ -102,7 +102,7 @@ IO.puts("Categories table seeded!")
 # Models
 Repo.delete_all(Model)
 
-Enum.each(1..100, fn _i ->
+Enum.each(1..20, fn _i ->
   username = Faker.Internet.user_name()
 
   Repo.insert!(%Model{
@@ -125,7 +125,7 @@ IO.puts("Models table seeded!")
 # Photo
 Repo.delete_all(Photo)
 
-Enum.each(1..500, fn _i ->
+Enum.each(1..30, fn _i ->
   Repo.insert!(%Photo{
     caption: Faker.Person.name(),
     hash: Utils.get_hash(Photo),
