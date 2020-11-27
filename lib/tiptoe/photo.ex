@@ -60,7 +60,7 @@ defmodule TipToe.Photo do
   end
 
   def make_url(%__MODULE__{} = photo) do
-    if photo do
+    if photo.uri do
       "https://" <> photo.img_bucket <> "/" <> photo.uri
     else
       @default_avatar_url

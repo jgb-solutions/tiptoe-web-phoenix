@@ -2,7 +2,7 @@ defmodule TipToe.Utils do
   alias TipToe.Repo
 
   def get_hash(struct) do
-    hash = Enum.random(100_000..999_999)
+    hash = Enum.random(111_111..999_999)
 
     case Repo.get_by(struct, hash: hash) do
       %struct{} ->

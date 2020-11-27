@@ -9,6 +9,5 @@ defmodule Tiptoe.Repo.Migrations.CreateMessages do
 
       timestamps(updated_at: false)
     end
-
   end
 end

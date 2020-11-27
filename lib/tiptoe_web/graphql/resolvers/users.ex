@@ -40,13 +40,13 @@ defmodule TipToeWeb.Resolvers.User do
 
     messages_query =
       from m in Message,
-        order_by: [desc: :inserted_at],
-        limit: 1
+        order_by: [desc: m.inserted_at],
+        limit: 10
 
     rooms_query =
       from r in Room,
         where: r.user_id == ^user.id,
-        order_by: [desc: :inserted_at],
+        order_by: [desc: r.inserted_at],
         preload: [messages: ^messages_query]
 
     room_with_chat_user_query =
