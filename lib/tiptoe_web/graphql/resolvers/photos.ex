@@ -3,20 +3,34 @@ defmodule TipToeWeb.Resolvers.Photo do
   import Ecto.Query
   alias TipToe.RepoHelper
   alias TipToe.Photo
+  alias TipToe.Model
   alias TipToe.Category
   alias TipToe.Utils
   alias Size
-  alias TipToe.Cache
+  # alias TipToe.Cache
 
   def paginate(args, %{context: %{current_user: _current_user}}) do
     page = args[:page] || 1
     page_size = args[:take] || 20
+    model_hash = args[:model_hash]
 
-    _key = "photos_page_" <> to_string(page)
+    # _key = "photos_page_" <> to_string(page)
 
     q =
       from RepoHelper.latest(Photo, :inserted_at),
         preload: [:model, :category]
+
+    q =
+      case(model_hash) do
+        nil ->
+          q
+
+        _ ->
+          model = Repo.get_by!(Model, hash: model_hash)
+
+          from p in q,
+            where: p.model_id == ^model.id
+      end
 
     paginated_photos =
       q
@@ -44,7 +58,7 @@ defmodule TipToeWeb.Resolvers.Photo do
   def related_photos(%{input: %{hash: hash, take: take}}, _resolution) do
     q =
       from t in Photo,
-        preload: [:model, :album],
+        preload: [:model],
         where: t.hash != ^hash,
         limit: ^take,
         order_by: fragment("RANDOM()")
@@ -60,7 +74,7 @@ defmodule TipToeWeb.Resolvers.Photo do
     q =
       from t in Photo,
         where: t.hash == ^args.hash,
-        preload: [:album, :model, :category]
+        preload: [:model, :category]
 
     case Repo.one(q) do
       %Photo{} = photo ->

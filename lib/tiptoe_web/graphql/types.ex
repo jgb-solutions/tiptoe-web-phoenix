@@ -70,6 +70,8 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :id, :id
     field :name, :string
     field :avatar_url, :string
+    field :model_hash, :string
+    field :type, :string
   end
 
   object :category do

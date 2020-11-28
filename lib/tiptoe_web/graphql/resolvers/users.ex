@@ -78,7 +78,9 @@ defmodule TipToeWeb.Resolvers.User do
               %{
                 id: room.model.id,
                 name: room.model.stage_name,
-                avatar_url: Model.make_poster_url(room.model)
+                avatar_url: Model.make_poster_url(room.model),
+                type: "model",
+                model_hash: room.model.hash
               }
             )
           end)
@@ -91,7 +93,8 @@ defmodule TipToeWeb.Resolvers.User do
               %{
                 id: room.user.id,
                 name: room.user.name,
-                avatar_url: User.make_avatar_url(room.user)
+                avatar_url: User.make_avatar_url(room.user),
+                type: "user"
               }
             )
           end)

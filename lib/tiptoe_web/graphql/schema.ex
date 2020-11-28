@@ -25,6 +25,7 @@ defmodule TipToeWeb.GraphQL.Schema do
     field :photos, :paginate_photos do
       arg(:page, :integer)
       arg(:take, :integer)
+      arg(:model_hash, :string)
       arg(:order_by, list_of(:order_by_input))
 
       resolve(&TipToeWeb.Resolvers.Photo.paginate/2)

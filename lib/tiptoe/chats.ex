@@ -17,9 +17,10 @@ defmodule TipToe.Chats do
       [%Message{}, ...]
 
   """
-  def list_messages do
+  def list_room_messages(room_id) do
     query =
-      from Message,
+      from m in Message,
+        where: m.room_id == ^room_id,
         order_by: [desc: :inserted_at],
         limit: 20,
         preload: [:user]

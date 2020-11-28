@@ -3,7 +3,6 @@ defmodule TipToeWeb.Resolvers.Model do
   import Ecto.Query
   alias TipToe.RepoHelper
   alias TipToe.Model
-  alias TipToe.Photo
 
   def paginate(args, _resolution) do
     page = args[:page] || 1
@@ -26,32 +25,16 @@ defmodule TipToeWeb.Resolvers.Model do
   end
 
   def find_by_hash(args, _resolution) do
-    photos_query =
-      from t in Photo,
-        order_by: [desc: t.inserted_at]
-
     q =
       from a in Model,
         where: a.hash == ^args.hash,
-        preload: [
-          photos: ^photos_query
-        ],
         limit: 1
 
     case Repo.one(q) do
       %Model{} = model ->
         model_with_cover_url = model |> Model.with_poster_url()
 
-        data = %{
-          model_with_cover_url
-          | photos:
-              Enum.map(model_with_cover_url.photos, fn photo ->
-                photo
-                |> Photo.with_url()
-              end)
-        }
-
-        {:ok, data}
+        {:ok, model_with_cover_url}
 
       nil ->
         {:error, message: "Model Not Found", code: 404}

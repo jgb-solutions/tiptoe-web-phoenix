@@ -4,9 +4,13 @@ defmodule TipToeWeb.RoomChannel do
   alias TipToe.Chats
   alias TipToe.User
 
-  def join("room:" <> _room, _params, socket) do
+  def join("room:" <> room_id, _params, socket) do
     # send(self(), :after_join)
-    messages = Enum.map(Chats.list_messages(), &mapMessageToResponse(&1))
+    messages =
+      Enum.map(
+        Chats.list_room_messages(room_id),
+        &mapMessageToResponse(&1)
+      )
 
     {:ok,
      %{
@@ -18,16 +22,16 @@ defmodule TipToeWeb.RoomChannel do
         "new_message",
         %{
           "text" => text,
-          "userId" => user_id
-          # "roomId" => room_id
+          "userId" => user_id,
+          "roomId" => room_id
         },
         socket
       ) do
     message =
       Chats.create_message(%{
         text: text,
-        user_id: user_id
-        # room_id: room_id
+        user_id: user_id,
+        room_id: room_id
       })
 
     broadcast_from!(socket, "new_message", mapMessageToResponse(message))
