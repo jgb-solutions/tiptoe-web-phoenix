@@ -40,6 +40,14 @@ defmodule TipToeWeb.GraphQL.Schema do
       resolve(&TipToeWeb.Resolvers.Photo.photos_by_category/2)
     end
 
+    field :favorite_photos, :paginate_photos do
+      arg(:page, :integer)
+      arg(:take, :integer)
+      arg(:order_by, list_of(:order_by_input))
+
+      resolve(&TipToeWeb.Resolvers.User.favorite_photos/2)
+    end
+
     field :related_photos, list_of(:photo) do
       arg(:input, non_null(:related_photos_input))
 

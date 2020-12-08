@@ -1,11 +1,13 @@
 defmodule TipToe.User do
   use Ecto.Schema
-  alias TipToe.Repo
   import Ecto.Query
   import Ecto.Changeset
+
+  alias TipToe.Repo
   alias TipToe.User
   alias TipToe.Model
   alias TipToe.Room
+  alias TipToe.Favorite
 
   @default_avatar_url "https://placeimg.com/140/140/any"
 
@@ -26,6 +28,8 @@ defmodule TipToe.User do
 
     has_one :model, Model
     has_many :rooms, Room
+    has_many :favorites, Favorite
+    has_many :liked_photos, through: [:favorites, :photo]
   end
 
   def changeset(%__MODULE__{} = user, attrs) do

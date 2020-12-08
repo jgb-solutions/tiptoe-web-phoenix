@@ -6,6 +6,7 @@ defmodule TipToe.Photo do
   alias TipToe.Category
   alias TipToe.Photo
   alias TipToe.Model
+  alias TipToe.Favorite
 
   @default_avatar_url "https://img-storage-prod.tiptoe.app/placeholders/photo-placeholder.jpg"
 
@@ -16,14 +17,17 @@ defmodule TipToe.Photo do
     field :img_bucket, :string, null: false
     field :featured, :boolean, default: false
     field :detail, :string
-    field :like_count, :integer, default: 0
+    field :like_count, :integer, virtual: true
+    field :liked_by_me, :boolean, virtual: true
     field :publish, :boolean, default: true
     field :url, :string, virtual: true
 
-    timestamps()
-
     belongs_to :model, Model
     belongs_to :category, Category
+    has_many :favorites, Favorite
+    has_many :users_whole_liked, through: [:favorites, :user]
+
+    timestamps()
   end
 
   def changeset(photo, attrs) do

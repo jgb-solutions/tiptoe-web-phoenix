@@ -5,6 +5,8 @@ defmodule TipToeWeb.Resolvers.User do
   alias TipToe.User
   alias TipToe.Model
   alias TipToe.Room
+  alias TipToe.Photo
+  alias TipToe.Favorite
   alias TipToe.Message
   alias TipToeWeb.Resolvers.Auth
 
@@ -110,4 +112,64 @@ defmodule TipToeWeb.Resolvers.User do
   def login(%{email: email, password: password}, _resolution) do
     Auth.login(email, password)
   end
+
+  def favorite_photos(args, %{context: %{current_user: user}}) do
+    page = args[:page] || 1
+    page_size = args[:take] || 20
+
+    query =
+      from p in Photo,
+        join: f in Favorite,
+        on: f.photo_id == p.id,
+        where: f.user_id == ^user.id,
+        preload: [:model],
+        group_by: p.id,
+        select_merge: %{like_count: count(f.id)}
+
+    paginated_photos =
+      query
+      |> RepoHelper.paginate(page: page, page_size: page_size)
+
+    photo_list =
+      Map.put(
+        paginated_photos,
+        :data,
+        Enum.map(
+          paginated_photos.data,
+          &Photo.with_url(&1)
+        )
+      )
+
+    {:ok, photo_list}
+  end
+
+  # def tag_product(product, %{tag: tag_attrs} = attrs) do
+  #   tag = create_or_find_tag(tag_attrs)
+
+  #   product
+  #   |> Ecto.build_assoc(:taggings)
+  #   |> Tagging.changeset(attrs)
+  #   |> Ecto.Changeset.put_assoc(:tag, tag)
+  #   |> Repo.insert()
+  # end
+
+  # defp create_or_find_tag(%{name: "" <> name} = attrs) do
+  #   %Tag{}
+  #   |> Tag.changeset(attrs)
+  #   |> Repo.insert()
+  #   |> case do
+  #     {:ok, tag} -> tag
+  #     _ -> Repo.get_by(Tag, name: name)
+  #   end
+  # end
+
+  # defp create_or_find_tag(_), do: nil
+
+  # def delete_tag_from_product(product, tag) do
+  #   Repo.find_by(Tagging, product_id: product.id, tag_id: tag.id)
+  #   |> case do
+  #     %Tagging{} = tagging -> Repo.delete(tagging)
+  #     nil -> {:ok, %Tagging{}}
+  #   end
+  # end
 end

@@ -4,12 +4,13 @@ defmodule TipToeWeb.Resolvers.Photo do
   alias TipToe.RepoHelper
   alias TipToe.Photo
   alias TipToe.Model
+  alias TipToe.Favorite
   alias TipToe.Category
   alias TipToe.Utils
   alias Size
   # alias TipToe.Cache
 
-  def paginate(args, %{context: %{current_user: _current_user}}) do
+  def paginate(args, %{context: %{current_user: user}}) do
     page = args[:page] || 1
     page_size = args[:take] || 20
     model_hash = args[:model_hash]
@@ -17,8 +18,15 @@ defmodule TipToeWeb.Resolvers.Photo do
     # _key = "photos_page_" <> to_string(page)
 
     q =
-      from RepoHelper.latest(Photo, :inserted_at),
-        preload: [:model, :category]
+      from p in RepoHelper.latest(Photo, :inserted_at),
+        preload: [:model, :category],
+        full_join: f in Favorite,
+        on: f.photo_id == p.id,
+        group_by: p.id,
+        select_merge: %{
+          like_count: count(f.id)
+          # liked_by_me: f.user_id == ^user.id
+        }
 
     q =
       case(model_hash) do

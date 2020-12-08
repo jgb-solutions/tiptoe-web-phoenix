@@ -45,7 +45,8 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :category, non_null(:category)
     field :model, non_null(:model)
     field :user, :user
-    field :like_count, non_null(:integer)
+    field :like_count, :integer
+    field :liked_by_me, :boolean
     field :inserted_at, non_null(:naive_datetime)
     field :updated_at, non_null(:naive_datetime)
   end
