@@ -7,7 +7,6 @@ defmodule TipToeWeb.Resolvers.Photo do
   alias TipToe.Favorite
   alias TipToe.Category
   alias TipToe.Utils
-  alias Size
   # alias TipToe.Cache
 
   def paginate(args, %{context: %{current_user: user}}) do
@@ -25,7 +24,6 @@ defmodule TipToeWeb.Resolvers.Photo do
         group_by: p.id,
         select_merge: %{
           like_count: count(f.id)
-          # liked_by_me: f.user_id == ^user.id
         }
 
     q =
@@ -50,7 +48,11 @@ defmodule TipToeWeb.Resolvers.Photo do
         :data,
         Enum.map(
           paginated_photos.data,
-          &Photo.with_url(&1)
+          fn photo ->
+            photo_with_url = Photo.with_url(photo)
+
+            Photo.with_liked_by_user(photo_with_url, user)
+          end
         )
       )
 

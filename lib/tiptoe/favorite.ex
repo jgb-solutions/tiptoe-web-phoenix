@@ -13,9 +13,9 @@ defmodule TipToe.Favorite do
   end
 
   @doc false
-  def changeset(favorite, attrs) do
+  def changeset(%__MODULE__{} = favorite, attrs) do
     favorite
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:photo_id, :user_id])
+    |> validate_required([:photo_id, :user_id])
   end
 end

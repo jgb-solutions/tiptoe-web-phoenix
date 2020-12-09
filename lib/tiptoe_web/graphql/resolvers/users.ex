@@ -136,11 +136,53 @@ defmodule TipToeWeb.Resolvers.User do
         :data,
         Enum.map(
           paginated_photos.data,
-          &Photo.with_url(&1)
+          fn photo ->
+            photo_with_url = Photo.with_url(photo)
+
+            Photo.with_liked_by_user(photo_with_url, user)
+          end
         )
       )
 
     {:ok, photo_list}
+  end
+
+  def toggle_like(
+        %{input: %{photo_id: photo_id}} = _args,
+        %{context: %{current_user: user}}
+      ) do
+    query =
+      from f in Favorite,
+        where: f.photo_id == ^photo_id,
+        where: f.user_id == ^user.id,
+        limit: 1
+
+    status =
+      case Repo.one(query) do
+        nil ->
+          f_changeset =
+            %Favorite{}
+            |> Favorite.changeset(%{photo_id: photo_id, user_id: user.id})
+
+          case Repo.insert(f_changeset) do
+            {:ok, _} ->
+              true
+
+            {:error, _} ->
+              false
+          end
+
+        favorite ->
+          case Repo.delete(favorite) do
+            {:ok, _} ->
+              true
+
+            {:error, _} ->
+              false
+          end
+      end
+
+    {:ok, %{success: status}}
   end
 
   # def tag_product(product, %{tag: tag_attrs} = attrs) do

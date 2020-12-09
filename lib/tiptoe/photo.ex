@@ -82,4 +82,18 @@ defmodule TipToe.Photo do
       _ -> photo_with_url
     end
   end
+
+  def with_liked_by_user(%__MODULE__{} = photo, user) do
+    photos_liked_by_me_query =
+      from f in "favorites",
+        where: f.user_id == ^user.id,
+        select: f.photo_id
+
+    all_my_liked_photos = Repo.all(photos_liked_by_me_query)
+
+    %{
+      photo
+      | liked_by_me: photo.id in all_my_liked_photos
+    }
+  end
 end

@@ -176,10 +176,10 @@ defmodule TipToeWeb.GraphQL.Schema do
       resolve(&TipToeWeb.Resolvers.Model.delete_model/2)
     end
 
-    field :update_like_count, :boolean do
-      arg(:input, non_null(:view_input))
+    field :toggle_like, :toggle_like_response do
+      arg(:input, non_null(:toggle_like_input))
 
-      resolve(&TipToeWeb.Resolvers.Utils.update_like_count/2)
+      resolve(&TipToeWeb.Resolvers.User.toggle_like/2)
     end
 
     # Non-protected Mutations

@@ -1,3 +1,4 @@
+import Ecto.Query
 alias TipToe.Repo
 alias TipToe.Utils
 alias TipToe.User
@@ -5,11 +6,16 @@ alias TipToe.Category
 alias TipToe.Photo
 alias TipToe.Model
 
+users_without_jgb_query =
+  from u in "users",
+    where: u.email != "jgbneatdesign@gmail.com",
+    order_by: fragment("RANDOM()"),
+    limit: 1,
+    select: %{id: u.id}
+
 Faker.start()
 
 categories = [
-  "Compas (Konpa)",
-  "Roots (Rasin)",
   "Reggae",
   "Yanvalou",
   "R&B",
@@ -38,13 +44,6 @@ categories = [
   "Riddim",
   "Afro",
   "Slam"
-]
-
-photo_urls = [
-  "1.jpg",
-  "2.jpg",
-  "3.jpg",
-  "4.jpg"
 ]
 
 # Users
@@ -110,7 +109,7 @@ Enum.each(1..20, fn _i ->
     stage_name: Faker.Person.name(),
     poster: "models/image-" <> Integer.to_string(Enum.random(1..66)) <> ".png",
     hash: Utils.get_hash(Model),
-    user_id: User.random().id,
+    user_id: Repo.one!(users_without_jgb_query).id,
     bio: Faker.Lorem.paragraph(),
     facebook: username,
     twitter: username,
@@ -130,7 +129,7 @@ Enum.each(1..30, fn _i ->
     caption: Faker.Person.name(),
     hash: Utils.get_hash(Photo),
     detail: Faker.Lorem.paragraph(5),
-    uri: "photos/" <> Enum.random(photo_urls),
+    uri: "photos/#{Enum.random(1..9)}.jpg",
     model_id: Model.random().id,
     category_id: Category.random().id,
     img_bucket: "img-storage-dev.tiptoe.app"

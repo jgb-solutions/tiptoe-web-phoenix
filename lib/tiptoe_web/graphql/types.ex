@@ -231,6 +231,10 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :success, :boolean
   end
 
+  object :toggle_like_response do
+    field :success, :boolean
+  end
+
   object :facebook_login_payload do
     field :data, :user
     field :token, non_null(:string)
@@ -254,6 +258,10 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
   input_object :view_input do
     field :hash, non_null(:string)
     field :type, non_null(:string)
+  end
+
+  input_object :toggle_like_input do
+    field :photo_id, non_null(:string)
   end
 
   # Enum
