@@ -72,8 +72,6 @@ defmodule TipToeWeb.Resolvers.User do
       case user_model do
         nil ->
           Enum.map(rooms, fn room ->
-            IO.inspect(room.model)
-
             Map.put(
               room,
               :chat_user,
