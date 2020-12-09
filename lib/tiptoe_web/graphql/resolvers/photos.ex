@@ -15,6 +15,7 @@ defmodule TipToeWeb.Resolvers.Photo do
     model_hash = args[:model_hash]
 
     # _key = "photos_page_" <> to_string(page)
+    all_my_liked_photos_id = Photo.get_all_liked_photos_id(user)
 
     q =
       from p in RepoHelper.latest(Photo, :inserted_at),
@@ -51,7 +52,7 @@ defmodule TipToeWeb.Resolvers.Photo do
           fn photo ->
             photo_with_url = Photo.with_url(photo)
 
-            Photo.with_liked_by_user(photo_with_url, user)
+            Photo.with_liked_by_user(photo_with_url, all_my_liked_photos_id)
           end
         )
       )

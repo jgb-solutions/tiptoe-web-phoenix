@@ -117,6 +117,8 @@ defmodule TipToeWeb.Resolvers.User do
     page = args[:page] || 1
     page_size = args[:take] || 20
 
+    all_my_liked_photos_id = Photo.get_all_liked_photos_id(user)
+
     query =
       from p in Photo,
         join: f in Favorite,
@@ -139,7 +141,7 @@ defmodule TipToeWeb.Resolvers.User do
           fn photo ->
             photo_with_url = Photo.with_url(photo)
 
-            Photo.with_liked_by_user(photo_with_url, user)
+            Photo.with_liked_by_user(photo_with_url, all_my_liked_photos_id)
           end
         )
       )

@@ -6,6 +6,7 @@ defmodule TipToe.Photo do
   alias TipToe.Category
   alias TipToe.Photo
   alias TipToe.Model
+  alias TipToe.User
   alias TipToe.Favorite
 
   @default_avatar_url "https://img-storage-prod.tiptoe.app/placeholders/photo-placeholder.jpg"
@@ -83,17 +84,19 @@ defmodule TipToe.Photo do
     end
   end
 
-  def with_liked_by_user(%__MODULE__{} = photo, user) do
+  def with_liked_by_user(%__MODULE__{} = photo, all_my_liked_photos) do
+    %{
+      photo
+      | liked_by_me: photo.id in all_my_liked_photos
+    }
+  end
+
+  def get_all_liked_photos_id(%User{} = user) do
     photos_liked_by_me_query =
       from f in "favorites",
         where: f.user_id == ^user.id,
         select: f.photo_id
 
-    all_my_liked_photos = Repo.all(photos_liked_by_me_query)
-
-    %{
-      photo
-      | liked_by_me: photo.id in all_my_liked_photos
-    }
+    Repo.all(photos_liked_by_me_query)
   end
 end
