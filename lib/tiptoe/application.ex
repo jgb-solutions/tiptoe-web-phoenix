@@ -15,9 +15,10 @@ defmodule TipToe.Application do
       {Phoenix.PubSub, name: TipToe.PubSub},
       TipToeWeb.Presence,
       # Start the Endpoint (http/https)
-      TipToeWeb.Endpoint
+      TipToeWeb.Endpoint,
       # Start a worker by calling: TipToe.Worker.start_link(arg)
       # {TipToe.Worker, arg}
+      {Absinthe.Subscription, TipToeWeb.Endpoint}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

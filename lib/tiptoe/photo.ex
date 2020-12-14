@@ -78,7 +78,7 @@ defmodule TipToe.Photo do
       | url: make_url(photo)
     }
 
-    case Map.has_key?(photo, :model) do
+    case Ecto.assoc_loaded?(photo.model) do
       true -> Map.put(photo_with_url, :model, Model.with_poster_url(photo.model))
       _ -> photo_with_url
     end

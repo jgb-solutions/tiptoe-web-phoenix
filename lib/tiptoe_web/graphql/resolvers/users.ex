@@ -124,6 +124,7 @@ defmodule TipToeWeb.Resolvers.User do
         where: f.user_id == ^user.id,
         preload: [:model],
         group_by: p.id,
+        order_by: [desc: :inserted_at],
         select_merge: %{like_count: count(f.id)}
 
     paginated_photos =
@@ -175,6 +176,14 @@ defmodule TipToeWeb.Resolvers.User do
         favorite ->
           case Repo.delete(favorite) do
             {:ok, _} ->
+              photo = Repo.get!(Photo, photo_id)
+
+              Absinthe.Subscription.publish(
+                TipToeWeb.Endpoint,
+                Photo.with_url(photo),
+                photo_updates: "photo_unliked"
+              )
+
               true
 
             {:error, _} ->

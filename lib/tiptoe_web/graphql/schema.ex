@@ -198,8 +198,9 @@ defmodule TipToeWeb.GraphQL.Schema do
   end
 
   subscription do
-    field :photo_added, :photo do
-      arg(:repo_name, non_null(:string))
+    # Absinthe.Subscription.publish(TipToeWeb.Endpoint, photo, photo_added: "new_photo")
+    field :photo_updates, :photo do
+      arg(:topic, non_null(:string))
 
       # The topic function is used to determine what topic a given subscription
       # cares about based on its arguments. You can think of it as a way to tell the
@@ -216,8 +217,8 @@ defmodule TipToeWeb.GraphQL.Schema do
       #
       # If needed, you can also provide a list of topics:
       #   {:ok, topic: ["absinthe-graphql/absinthe", "elixir-lang/elixir"]}
-      config(fn args, _ ->
-        {:ok, topic: args.repo_name}
+      config(fn args, _context ->
+        {:ok, topic: args.topic}
       end)
 
       # this tells Absinthe to run any subscriptions with this field every time

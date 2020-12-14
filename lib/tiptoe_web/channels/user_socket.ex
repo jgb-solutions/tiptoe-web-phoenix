@@ -1,6 +1,9 @@
 defmodule TipToeWeb.UserSocket do
   use Phoenix.Socket
 
+  use Absinthe.Phoenix.Socket,
+    schema: TipToeWeb.GraphQL.Schema
+
   ## Channels
   channel "notifications", TipToeWeb.NotificationsChannel
   channel "room:*", TipToeWeb.RoomChannel
@@ -13,10 +16,17 @@ defmodule TipToeWeb.UserSocket do
            token
          ) do
       {:ok, user_id} ->
+        socket =
+          Absinthe.Phoenix.Socket.put_options(socket,
+            context: %{
+              current_user: user_id
+            }
+          )
+
         {:ok, assign(socket, :current_user, user_id)}
 
-      {:error, reason} ->
-        {:error, reason}
+      {:error, _reason} ->
+        :error
     end
   end
 
