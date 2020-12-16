@@ -1,18 +1,21 @@
 defmodule TipToeWeb.Resolvers.User do
   alias TipToe.Repo
   import Ecto.Query
-  alias TipToe.RepoHelper
+  alias TipToe.Room
   alias TipToe.User
   alias TipToe.Model
-  alias TipToe.Room
   alias TipToe.Photo
-  alias TipToe.Favorite
   alias TipToe.Message
+  alias TipToe.Favorite
+  alias TipToe.RepoHelper
   alias TipToeWeb.Resolvers.Auth
 
+  @page 1
+  @page_size 20
+
   def paginate(args, _resolution) do
-    page = args[:page] || 1
-    page_size = args[:take] || 20
+    page = args[:page] || @page
+    page_size = args[:take] || @page_size
 
     q =
       from RepoHelper.latest(User),
@@ -117,28 +120,31 @@ defmodule TipToeWeb.Resolvers.User do
 
     all_my_liked_photos_id = Photo.get_all_liked_photos_id(user)
 
-    query =
-      from p in Photo,
-        join: f in Favorite,
-        on: f.photo_id == p.id,
+    favorite_query =
+      from f in Favorite,
+        join: p in assoc(f, :photo),
         where: f.user_id == ^user.id,
-        preload: [:model],
-        group_by: p.id,
+        preload: [photo: :model],
         order_by: [desc: :inserted_at],
+        group_by: f.id,
         select_merge: %{like_count: count(f.id)}
 
-    paginated_photos =
-      query
+    paginated_favorites =
+      favorite_query
       |> RepoHelper.paginate(page: page, page_size: page_size)
 
+    # Get photo list from favorites
     photo_list =
       Map.put(
-        paginated_photos,
+        paginated_favorites,
         :data,
         Enum.map(
-          paginated_photos.data,
-          fn photo ->
-            photo_with_url = Photo.with_url(photo)
+          paginated_favorites.data,
+          fn favorite ->
+            photo_with_url = %{
+              Photo.with_url(favorite.photo)
+              | like_count: favorite.like_count
+            }
 
             Photo.with_liked_by_user(photo_with_url, all_my_liked_photos_id)
           end
@@ -193,34 +199,4 @@ defmodule TipToeWeb.Resolvers.User do
 
     {:ok, %{success: status}}
   end
-
-  # def tag_product(product, %{tag: tag_attrs} = attrs) do
-  #   tag = create_or_find_tag(tag_attrs)
-
-  #   product
-  #   |> Ecto.build_assoc(:taggings)
-  #   |> Tagging.changeset(attrs)
-  #   |> Ecto.Changeset.put_assoc(:tag, tag)
-  #   |> Repo.insert()
-  # end
-
-  # defp create_or_find_tag(%{name: "" <> name} = attrs) do
-  #   %Tag{}
-  #   |> Tag.changeset(attrs)
-  #   |> Repo.insert()
-  #   |> case do
-  #     {:ok, tag} -> tag
-  #     _ -> Repo.get_by(Tag, name: name)
-  #   end
-  # end
-
-  # defp create_or_find_tag(_), do: nil
-
-  # def delete_tag_from_product(product, tag) do
-  #   Repo.find_by(Tagging, product_id: product.id, tag_id: tag.id)
-  #   |> case do
-  #     %Tagging{} = tagging -> Repo.delete(tagging)
-  #     nil -> {:ok, %Tagging{}}
-  #   end
-  # end
 end
