@@ -31,6 +31,9 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :twitter_url, :string
     field :instagram_url, :string
     field :youtube_url, :string
+    field :photos_count, :integer
+    field :followers_count, :integer
+    field :followed_by_me, :boolean
     field :inserted_at, non_null(:naive_datetime)
     field :updated_at, non_null(:naive_datetime)
   end
@@ -45,7 +48,7 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :category, non_null(:category)
     field :model, non_null(:model)
     field :user, :user
-    field :like_count, :integer
+    field :likes_count, :integer
     field :liked_by_me, :boolean
     field :inserted_at, non_null(:naive_datetime)
     field :updated_at, non_null(:naive_datetime)
@@ -235,6 +238,10 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :success, :boolean
   end
 
+  object :toggle_follow_response do
+    field :success, :boolean
+  end
+
   object :facebook_login_payload do
     field :data, :user
     field :token, non_null(:string)
@@ -262,6 +269,10 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
 
   input_object :toggle_like_input do
     field :photo_id, non_null(:string)
+  end
+
+  input_object :toggle_follow_input do
+    field :model_id, non_null(:string)
   end
 
   # Enum

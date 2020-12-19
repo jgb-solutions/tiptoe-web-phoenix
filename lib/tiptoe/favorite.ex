@@ -8,7 +8,7 @@ defmodule TipToe.Favorite do
   schema "favorites" do
     belongs_to :user, User
     belongs_to :photo, Photo
-    field :like_count, :integer, virtual: true
+    field :likes_count, :integer, virtual: true
 
     timestamps(updated_at: false)
   end

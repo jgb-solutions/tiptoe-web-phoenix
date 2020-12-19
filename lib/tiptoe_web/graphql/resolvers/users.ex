@@ -7,6 +7,7 @@ defmodule TipToeWeb.Resolvers.User do
   alias TipToe.Photo
   alias TipToe.Message
   alias TipToe.Favorite
+  alias TipToe.Follower
   alias TipToe.RepoHelper
   alias TipToeWeb.Resolvers.Auth
 
@@ -127,7 +128,7 @@ defmodule TipToeWeb.Resolvers.User do
         preload: [photo: :model],
         order_by: [desc: :inserted_at],
         group_by: f.id,
-        select_merge: %{like_count: count(f.id)}
+        select_merge: %{likes_count: count(f.id)}
 
     paginated_favorites =
       favorite_query
@@ -143,7 +144,7 @@ defmodule TipToeWeb.Resolvers.User do
           fn favorite ->
             photo_with_url = %{
               Photo.with_url(favorite.photo)
-              | like_count: favorite.like_count
+              | likes_count: favorite.likes_count
             }
 
             Photo.with_liked_by_user(photo_with_url, all_my_liked_photos_id)
@@ -190,6 +191,44 @@ defmodule TipToeWeb.Resolvers.User do
                 photo_updates: "photo_unliked"
               )
 
+              true
+
+            {:error, _} ->
+              false
+          end
+      end
+
+    {:ok, %{success: status}}
+  end
+
+  def toggle_follow(
+        %{input: %{model_id: model_id}} = _args,
+        %{context: %{current_user: user}}
+      ) do
+    query =
+      from f in Follower,
+        where: f.model_id == ^model_id,
+        where: f.user_id == ^user.id,
+        limit: 1
+
+    status =
+      case Repo.one(query) do
+        nil ->
+          f_changeset =
+            %Follower{}
+            |> Follower.changeset(%{model_id: model_id, user_id: user.id})
+
+          case Repo.insert(f_changeset) do
+            {:ok, _} ->
+              true
+
+            {:error, _} ->
+              false
+          end
+
+        follow ->
+          case Repo.delete(follow) do
+            {:ok, _} ->
               true
 
             {:error, _} ->

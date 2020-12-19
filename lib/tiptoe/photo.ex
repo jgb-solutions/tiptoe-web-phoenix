@@ -18,7 +18,7 @@ defmodule TipToe.Photo do
     field :img_bucket, :string, null: false
     field :featured, :boolean, default: false
     field :detail, :string
-    field :like_count, :integer, virtual: true
+    field :likes_count, :integer, virtual: true
     field :liked_by_me, :boolean, virtual: true
     field :publish, :boolean, default: true
     field :url, :string, virtual: true
@@ -42,7 +42,7 @@ defmodule TipToe.Photo do
       :detail,
       :model_id,
       :category_id,
-      :like_count,
+      :likes_count,
       :publish
     ])
     |> validate_required([

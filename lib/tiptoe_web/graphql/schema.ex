@@ -182,6 +182,12 @@ defmodule TipToeWeb.GraphQL.Schema do
       resolve(&TipToeWeb.Resolvers.User.toggle_like/2)
     end
 
+    field :toggle_follow, :toggle_follow_response do
+      arg(:input, non_null(:toggle_follow_input))
+
+      resolve(&TipToeWeb.Resolvers.User.toggle_follow/2)
+    end
+
     # Non-protected Mutations
     # Auth
     field :register, :user do

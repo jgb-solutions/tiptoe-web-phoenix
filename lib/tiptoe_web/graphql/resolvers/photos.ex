@@ -24,7 +24,7 @@ defmodule TipToeWeb.Resolvers.Photo do
         on: f.photo_id == p.id,
         group_by: p.id,
         select_merge: %{
-          like_count: count(f.id)
+          likes_count: count(f.id)
         }
 
     q =

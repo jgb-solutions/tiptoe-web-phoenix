@@ -7,6 +7,7 @@ defmodule TipToe.Model do
   alias TipToe.Category
   alias TipToe.Photo
   alias TipToe.Model
+  alias TipToe.Follower
 
   @default_poster_url "https://img-storage-prod.tiptoe.app/placeholders/model-placeholder.jpg"
 
@@ -23,8 +24,12 @@ defmodule TipToe.Model do
     field :youtube, :string
     field :verified, :boolean, default: false
     field :poster_url, :string, virtual: true
+    field :photos_count, :integer, virtual: true
+    field :followers_count, :integer, virtual: true
+    field :followed_by_me, :boolean, virtual: true
 
     has_many :photos, Photo
+    has_many :followers, Follower
     belongs_to :user, User
 
     timestamps()
@@ -56,5 +61,21 @@ defmodule TipToe.Model do
 
   def with_poster_url(%__MODULE__{} = model) do
     %{model | poster_url: make_poster_url(model)}
+  end
+
+  def with_followed_by_user(%__MODULE__{} = model, all_my_followed_models) do
+    %{
+      model
+      | followed_by_me: model.id in all_my_followed_models
+    }
+  end
+
+  def get_all_followed_models_id(%User{} = user) do
+    models_followed_by_me_query =
+      from f in "followers",
+        where: f.user_id == ^user.id,
+        select: f.model_id
+
+    Repo.all(models_followed_by_me_query)
   end
 end
