@@ -34,6 +34,7 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :photos_count, :integer
     field :followers_count, :integer
     field :followed_by_me, :boolean
+    field :room_with_me, :room
     field :inserted_at, non_null(:naive_datetime)
     field :updated_at, non_null(:naive_datetime)
   end

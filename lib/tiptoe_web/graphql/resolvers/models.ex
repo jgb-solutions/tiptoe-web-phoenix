@@ -5,9 +5,12 @@ defmodule TipToeWeb.Resolvers.Model do
   alias TipToe.Model
   alias TipToe.Follower
 
+  @page 1
+  @page_size 20
+
   def paginate(args, _resolution) do
-    page = args[:page] || 1
-    page_size = args[:take] || 20
+    page = args[:page] || @page
+    page_size = args[:take] || @page_size
 
     q =
       from RepoHelper.latest(Model),
@@ -26,26 +29,14 @@ defmodule TipToeWeb.Resolvers.Model do
   end
 
   def find_by_hash(args, %{context: %{current_user: user}}) do
-    followers_subquery =
-      from f in Follower,
-        group_by: f.id
-
-    # select_merge: %{
-    #   followers_count: count(f.id)
-    # }
-
     q =
       from m in Model,
         where: m.hash == ^args.hash,
         left_join: p in assoc(m, :photos),
-        left_join: f in subquery(followers_subquery),
-        on: f.model_id == m.id,
         group_by: m.id,
         limit: 1,
         select_merge: %{
-          photos_count: count(p.id),
-          # followers_count: count(f.id)
-          follower: f
+          photos_count: count(p.id)
         }
 
     case Repo.one(q) do
@@ -53,13 +44,16 @@ defmodule TipToeWeb.Resolvers.Model do
         all_my_followed_models_id = Model.get_all_followed_models_id(user)
         model_with_poster_url = model |> Model.with_poster_url()
 
-        model =
+        model_with_followed_by_user =
           Model.with_followed_by_user(
             model_with_poster_url,
             all_my_followed_models_id
           )
 
-        {:ok, model}
+        model_with_followers_count = Model.with_followers_count(model_with_followed_by_user)
+        model_with_room_for_user = Model.with_room_for_user(model_with_followers_count, user)
+
+        {:ok, model_with_room_for_user}
 
       nil ->
         {:error, message: "Model Not Found", code: 404}

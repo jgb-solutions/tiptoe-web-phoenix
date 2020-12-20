@@ -6,6 +6,7 @@ defmodule TipToe.Model do
   alias TipToe.User
   alias TipToe.Category
   alias TipToe.Photo
+  alias TipToe.Room
   alias TipToe.Model
   alias TipToe.Follower
 
@@ -27,6 +28,7 @@ defmodule TipToe.Model do
     field :photos_count, :integer, virtual: true
     field :followers_count, :integer, virtual: true
     field :followed_by_me, :boolean, virtual: true
+    field :room_with_me, :any, virtual: true
 
     has_many :photos, Photo
     has_many :followers, Follower
@@ -77,5 +79,34 @@ defmodule TipToe.Model do
         select: f.model_id
 
     Repo.all(models_followed_by_me_query)
+  end
+
+  def with_followers_count(%__MODULE__{} = model) do
+    followers_query =
+      from f in "followers",
+        where: f.model_id == ^model.id,
+        select: count(f.id)
+
+    followers_count = Repo.one(followers_query)
+
+    %{
+      model
+      | followers_count: followers_count
+    }
+  end
+
+  def with_room_for_user(%__MODULE__{} = model, %User{} = user) do
+    room_query =
+      from r in Room,
+        where: r.user_id == ^user.id,
+        where: r.model_id == ^model.id,
+        limit: 1
+
+    room = Repo.one(room_query)
+
+    %{
+      model
+      | room_with_me: room
+    }
   end
 end
