@@ -1,22 +1,9 @@
 defmodule TipToe.Chats do
-  @moduledoc """
-  The Chats context.
-  """
-
   import Ecto.Query, warn: false
   alias TipToe.Repo
-
   alias TipToe.Message
+  alias TipToe.Room
 
-  @doc """
-  Returns the list of messages.
-
-  ## Examples
-
-      iex> list_messages()
-      [%Message{}, ...]
-
-  """
   def list_room_messages(room_id) do
     query =
       from m in Message,
@@ -28,34 +15,31 @@ defmodule TipToe.Chats do
     Repo.all(query)
   end
 
-  @doc """
-  Gets a single message.
+  def create_room(%{input: %{model_id: model_id}} = _args, %{context: %{current_user: user}}) do
+    query =
+      from r in Room,
+        where: r.model_id == ^model_id,
+        where: r.user_id == ^user.id,
+        limit: 1
 
-  Raises `Ecto.NoResultsError` if the Message does not exist.
+    case Repo.one(query) do
+      nil ->
+        room_changeset =
+          %Room{}
+          |> Room.changeset(%{model_id: model_id, user_id: user.id})
 
-  ## Examples
+        case Repo.insert(room_changeset) do
+          {:error, _changeset} -> {:error, message: "Room could not be created", code: 503}
+          {:ok, room} -> {:ok, room}
+        end
 
-      iex> get_message!(123)
-      %Message{}
+      room ->
+        {:ok, room}
+    end
+  end
 
-      iex> get_message!(456)
-      ** (Ecto.NoResultsError)
-
-  """
   def get_message!(id), do: Repo.get!(Message, id)
 
-  @doc """
-  Creates a message.
-
-  ## Examples
-
-      iex> create_message(%{field: value})
-      {:ok, %Message{}}
-
-      iex> create_message(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_message(attrs \\ %{}) do
     %Message{}
     |> Message.changeset(attrs)
@@ -63,49 +47,16 @@ defmodule TipToe.Chats do
     |> Repo.preload(:user)
   end
 
-  @doc """
-  Updates a message.
-
-  ## Examples
-
-      iex> update_message(message, %{field: new_value})
-      {:ok, %Message{}}
-
-      iex> update_message(message, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def update_message(%Message{} = message, attrs) do
     message
     |> Message.changeset(attrs)
     |> Repo.update()
   end
 
-  @doc """
-  Deletes a message.
-
-  ## Examples
-
-      iex> delete_message(message)
-      {:ok, %Message{}}
-
-      iex> delete_message(message)
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_message(%Message{} = message) do
     Repo.delete(message)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking message changes.
-
-  ## Examples
-
-      iex> change_message(message)
-      %Ecto.Changeset{data: %Message{}}
-
-  """
   def change_message(%Message{} = message, attrs \\ %{}) do
     Message.changeset(message, attrs)
   end

@@ -188,6 +188,11 @@ defmodule TipToeWeb.GraphQL.Schema do
       resolve(&TipToeWeb.Resolvers.User.toggle_follow/2)
     end
 
+    field :create_room, non_null(:room) do
+      arg(:input, non_null(:create_room_input))
+      resolve(&TipToe.Chats.create_room/2)
+    end
+
     # Non-protected Mutations
     # Auth
     field :register, :user do

@@ -276,6 +276,10 @@ defmodule TipToeWeb.GraphQL.Schema.Types do
     field :model_id, non_null(:string)
   end
 
+  input_object :create_room_input do
+    field :model_id, non_null(:string)
+  end
+
   # Enum
   # enum :sort_order do
   #   value(:asc, as: "ASC")

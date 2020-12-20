@@ -5,6 +5,11 @@ defmodule TipToe.Message do
   alias TipToe.Room
 
   # @derive {Jason.Encoder, only: [:id, :text, :user_id, :inserted_at]}
+  @inputs [
+    :text,
+    :user_id,
+    :room_id
+  ]
 
   schema "messages" do
     field :text, :string
@@ -18,15 +23,7 @@ defmodule TipToe.Message do
   @doc false
   def changeset(message, attrs) do
     message
-    |> cast(attrs, [
-      :text,
-      :user_id,
-      :room_id
-    ])
-    |> validate_required([
-      :text,
-      :user_id,
-      :room_id
-    ])
+    |> cast(attrs, @inputs)
+    |> validate_required(@inputs)
   end
 end
