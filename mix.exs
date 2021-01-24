@@ -44,7 +44,8 @@ defmodule TipToe.MixProject do
       {:bamboo, "~> 1.5"},
       {:bcrypt_elixir, "~> 2.0"},
       {:oban, "~> 1.2"},
-      {:faker, "~> 0.13"}, # only: [:test, :dev],
+      # only: [:test, :dev],
+      {:faker, "~> 0.13"},
       {:scrivener_ecto, "~> 2.0"},
       {:cors_plug, "~> 2.0"},
       {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
@@ -53,7 +54,8 @@ defmodule TipToe.MixProject do
       {:absinthe_plug, "~> 1.5"},
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
-      {:slugger, "~> 0.3.0"}
+      {:slugger, "~> 0.3.0"},
+      {:dataloader, "~> 1.0"}
     ]
   end
 

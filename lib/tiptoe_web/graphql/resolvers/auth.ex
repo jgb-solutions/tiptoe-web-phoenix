@@ -33,8 +33,4 @@ defmodule TipToeWeb.Resolvers.Auth do
   def logout(_args, %{context: %{current_user: current_user}}) do
     {:ok, current_user}
   end
-
-  def logout(_args, _info) do
-    {:error, message: "You Need to login", code: 403}
-  end
 end

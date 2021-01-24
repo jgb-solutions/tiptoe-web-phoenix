@@ -25,21 +25,18 @@ defmodule TipToeWeb.Router do
     live "/", PageLive, :index
   end
 
-  scope "/api" do
+  scope "/graphql" do
     pipe_through :api
+    pipe_through :graphql
 
-    scope "/graphql" do
-      pipe_through :graphql
-
-      if Mix.env() == :dev do
-        forward "/playground", Absinthe.Plug.GraphiQL,
-          schema: TipToeWeb.GraphQL.Schema,
-          interface: :playground,
-          socket: TipToeWeb.UserSocket
-      end
-
-      forward "/", Absinthe.Plug, schema: TipToeWeb.GraphQL.Schema
+    if Mix.env() == :dev do
+      forward "/playground", Absinthe.Plug.GraphiQL,
+        schema: TipToeWeb.GraphQL.Schema,
+        interface: :playground,
+        socket: TipToeWeb.UserSocket
     end
+
+    forward "/", Absinthe.Plug, schema: TipToeWeb.GraphQL.Schema
   end
 
   # Enables LiveDashboard only for development
