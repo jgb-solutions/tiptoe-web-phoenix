@@ -5,19 +5,17 @@ defmodule TipToeWeb.Resolvers.Model do
   alias TipToe.Model
   alias TipToe.Follower
 
-  @page 1
-  @page_size 20
+  def paginate(%{page: page, take: page_size} = args, _) do
+    query = from(m in Model)
 
-  def paginate(args, _resolution) do
-    page = args[:page] || @page
-    page_size = args[:take] || @page_size
-
-    q =
-      from RepoHelper.latest(Model),
-        preload: [:user]
+    query =
+      Enum.reduce(Map.take(args, [:random]), query, fn
+        {:random, _random}, query ->
+          from q in query, order_by: fragment("RANDOM()")
+      end)
 
     paginated_models =
-      q
+      query
       |> RepoHelper.paginate(page: page, page_size: page_size)
 
     paginated_models_with_poster_url = %{

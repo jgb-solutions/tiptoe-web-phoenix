@@ -4,7 +4,7 @@ defmodule TipToeWeb.GraphQL.Schema do
   import Absinthe.Resolution.Helpers, only: [dataloader: 1, dataloader: 3]
 
   alias TipToeWeb.Schema.Middleware.Authenticate
-  alias TipToe.{Accounts}
+  alias TipToe.{Accounts, Models}
 
   query do
     # Protected Query
@@ -27,11 +27,12 @@ defmodule TipToeWeb.GraphQL.Schema do
     # Photos
     @desc "Get all photos"
     field :photos, :paginate_photos do
-      arg(:page, :integer)
-      arg(:take, :integer)
-      arg(:model_hash, :string)
+      arg(:page, type: :integer, default_value: 1)
+      arg(:take, type: :integer, default_value: 20)
+      arg(:model_hash, type: :string, default_value: nil)
+      arg(:random, type: :boolean, default_value: false)
       arg(:order_by, list_of(:order_by_input))
-
+      middleware(Authenticate)
       resolve(&TipToeWeb.Resolvers.Photo.paginate/2)
     end
 
@@ -92,10 +93,12 @@ defmodule TipToeWeb.GraphQL.Schema do
 
     # Models
     field :models, :paginate_models do
-      arg(:page, :integer)
-      arg(:take, :integer)
       arg(:order_by, list_of(:order_by_input))
-
+      arg(:page, type: :integer, default_value: 1)
+      arg(:take, type: :integer, default_value: 20)
+      arg(:random, type: :boolean, default_value: false)
+      arg(:order_by, list_of(:order_by_input))
+      middleware(Authenticate)
       resolve(&TipToeWeb.Resolvers.Model.paginate/2)
     end
 
@@ -293,8 +296,8 @@ defmodule TipToeWeb.GraphQL.Schema do
     field :url, :string
     field :featured, :boolean
     field :detail, :string
-    field :category, non_null(:category)
-    field :model, non_null(:model)
+    field :category, :category, resolve: dataloader(Models)
+    field :model, :model, resolve: dataloader(Models)
     field :user, :user
     field :likes_count, :integer
     field :liked_by_me, :boolean
@@ -543,6 +546,7 @@ defmodule TipToeWeb.GraphQL.Schema do
     loader =
       Dataloader.new()
       |> Dataloader.add_source(Accounts, Accounts.datasource())
+      |> Dataloader.add_source(Models, Models.datasource())
 
     Map.put(ctx, :loader, loader)
   end

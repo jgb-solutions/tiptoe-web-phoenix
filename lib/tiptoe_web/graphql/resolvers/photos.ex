@@ -7,19 +7,15 @@ defmodule TipToeWeb.Resolvers.Photo do
   alias TipToe.Favorite
   alias TipToe.Category
   alias TipToe.Utils
-  # alias TipToe.Cache
 
-  def paginate(args, %{context: %{current_user: user}}) do
-    page = args[:page] || 1
-    page_size = args[:take] || 20
-    model_hash = args[:model_hash]
-
-    # _key = "photos_page_" <> to_string(page)
+  def paginate(
+        %{page: page, take: page_size} = args,
+        %{context: %{current_user: user}}
+      ) do
     all_my_liked_photos_id = Photo.get_all_liked_photos_id(user)
 
-    q =
+    query =
       from p in RepoHelper.latest(Photo, :inserted_at),
-        preload: [:model, :category],
         full_join: f in Favorite,
         on: f.photo_id == p.id,
         group_by: p.id,
@@ -27,20 +23,20 @@ defmodule TipToeWeb.Resolvers.Photo do
           likes_count: count(f.id)
         }
 
-    q =
-      case(model_hash) do
-        nil ->
-          q
+    query =
+      Enum.reduce(Map.take(args, [:random, :model_hash]), query, fn
+        {:random, _random}, query ->
+          from q in query, order_by: fragment("RANDOM()")
 
-        _ ->
+        {:model_hash, model_hash}, query ->
           model = Repo.get_by!(Model, hash: model_hash)
 
-          from p in q,
+          from p in query,
             where: p.model_id == ^model.id
-      end
+      end)
 
     paginated_photos =
-      q
+      query
       |> RepoHelper.paginate(page: page, page_size: page_size)
 
     data =
@@ -59,12 +55,6 @@ defmodule TipToeWeb.Resolvers.Photo do
 
     {:ok, data}
   end
-
-  def paginate(_args, _resolution),
-    do: {
-      :error,
-      message: "You Need to login", code: 401
-    }
 
   def related_photos(%{input: %{hash: hash, take: take}}, _resolution) do
     q =
