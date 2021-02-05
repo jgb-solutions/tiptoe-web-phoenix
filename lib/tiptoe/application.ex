@@ -6,6 +6,14 @@ defmodule TipToe.Application do
   use Application
 
   def start(_type, _args) do
+    # Dotenv config
+    unless Mix.env() == :prod do
+      Dotenv.load()
+      Mix.Task.run("loadconfig")
+    end
+
+    # end Dotenv config
+
     children = [
       # Start the Ecto repository
       TipToe.Repo,

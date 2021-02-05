@@ -55,7 +55,8 @@ defmodule TipToe.MixProject do
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
       {:slugger, "~> 0.3.0"},
-      {:dataloader, "~> 1.0"}
+      {:dataloader, "~> 1.0"},
+      {:dotenv, "~> 3.0.0", only: [:dev, :test]}
     ]
   end
 
