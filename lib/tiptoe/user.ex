@@ -12,24 +12,26 @@ defmodule TipToe.User do
   @default_avatar_url "https://placeimg.com/140/140/any"
 
   schema "users" do
-    field :name, :string, null: false
-    field :email, :string, size: 60, unique: true
-    field :password, :string, size: 60
-    field :avatar, :string
-    field :telephone, :string, size: 20
-    field :admin, :boolean, default: false
-    field :active, :boolean, default: false
-    field :password_reset_code, :string
-    field :first_login, :boolean, default: true
-    field :img_bucket, :string
-    field :avatar_url, :string, virtual: true
+    field(:name, :string, null: false)
+    field(:email, :string, size: 60, unique: true)
+    field(:password, :string, size: 60)
+    field(:avatar, :string)
+    field(:telephone, :string, size: 20)
+    field(:admin, :boolean, default: false)
+    field(:active, :boolean, default: false)
+    field(:password_reset_code, :string)
+    field(:first_login, :boolean, default: true)
+    field(:img_bucket, :string)
+    field(:gender, Ecto.Enum, values: [:male, :female])
+    field(:user_type, Ecto.Enum, values: [:consumer, :model])
+    field(:avatar_url, :string, virtual: true)
 
     timestamps()
 
-    has_one :model, Model
-    has_many :rooms, Room
-    has_many :favorites, Favorite
-    has_many :liked_photos, through: [:favorites, :photo]
+    has_one(:model, Model)
+    has_many(:rooms, Room)
+    has_many(:favorites, Favorite)
+    has_many(:liked_photos, through: [:favorites, :photo])
   end
 
   def changeset(%__MODULE__{} = user, attrs) do
@@ -39,12 +41,13 @@ defmodule TipToe.User do
       :email,
       :password,
       :telephone,
-      :facebook_link,
       :avatar,
       :admin,
       :active,
       :first_login,
-      :img_bucket
+      :img_bucket,
+      :gender,
+      :user_type
     ])
     |> validate_required([:name, :email, :password])
     |> unsafe_validate_unique(:email, Repo)
@@ -66,7 +69,7 @@ defmodule TipToe.User do
   def register(attrs \\ %{}) do
     %__MODULE__{}
     |> changeset(attrs)
-    |> Repo.insert!()
+    |> Repo.insert()
   end
 
   def get_user!(id) do
@@ -75,9 +78,10 @@ defmodule TipToe.User do
 
   def random do
     q =
-      from User,
+      from(User,
         order_by: fragment("RANDOM()"),
         limit: 1
+      )
 
     Repo.one(q)
   end

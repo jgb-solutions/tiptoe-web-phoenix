@@ -14,6 +14,8 @@ defmodule TipToe.Repo.Migrations.AddUsersTable do
       add :first_login, :boolean, default: true
       add :img_bucket, :string
       add :token, :text
+      add :gender, :text
+      add :user_type, :text
 
       timestamps()
     end
