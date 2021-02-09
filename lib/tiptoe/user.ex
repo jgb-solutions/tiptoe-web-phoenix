@@ -77,10 +77,16 @@ defmodule TipToe.User do
   end
 
   def update_user(%__MODULE__{} = user, attrs) do
-    case is_map(attrs.model) do
+    new_map =
+      case attrs.first_login do
+        true ->
+          Map.update!(attrs, :first_login, fn _boolean -> false end)
+      end
+
+    case Map.has_key?(attrs, :model) do
       true ->
         Repo.preload(user, :model)
-        |> changeset(attrs)
+        |> changeset(new_map)
         |> put_assoc(:model, attrs.model)
 
       _ ->

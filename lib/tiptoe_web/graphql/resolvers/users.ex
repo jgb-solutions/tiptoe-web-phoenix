@@ -46,8 +46,6 @@ defmodule TipToeWeb.Resolvers.User do
         {:ok, user}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
-
         {:error,
          message: "There was an error udpating the user",
          code: 409,

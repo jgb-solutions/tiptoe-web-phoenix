@@ -7,7 +7,7 @@ defmodule TipToe.Application do
 
   def start(_type, _args) do
     # Dotenv config
-    unless Mix.env() == :prod do
+    unless Application.get_env(:tiptoe, :environment) == :prod do
       Dotenv.load()
       Mix.Task.run("loadconfig")
     end

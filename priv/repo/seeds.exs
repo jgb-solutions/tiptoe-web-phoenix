@@ -55,21 +55,27 @@ users = [
     email: "jgbneatdesign@gmail.com",
     password: Bcrypt.hash_pwd_salt("asdf,,,"),
     admin: true,
-    telephone: "41830318"
+    telephone: "41830318",
+    user_type: "consumer",
+    gender: "male"
   },
   %{
     name: "Gregory Gaudin",
     email: "greg@tiptoe.app",
     password: Bcrypt.hash_pwd_salt("password"),
     admin: true,
-    telephone: "+1 (908) 578-5165"
+    telephone: "+1 (908) 578-5165",
+    user_type: "consumer",
+    gender: "male"
   },
   %{
     name: "Keren Kapuchi",
     email: "keren@tiptoe.app",
     password: Bcrypt.hash_pwd_salt("password"),
     admin: true,
-    telephone: "+509 43 91 5927"
+    telephone: "+509 43 91 5927",
+    user_type: "consumer",
+    gender: "female"
   }
 ]
 
