@@ -6,6 +6,7 @@ defmodule TipToeWeb.Resolvers.User do
   alias TipToe.Favorite
   alias TipToe.Follower
   alias TipToe.RepoHelper
+  import TipToe.Utils, only: [translate_errors: 1]
 
   @page 1
   @page_size 20
@@ -36,6 +37,23 @@ defmodule TipToeWeb.Resolvers.User do
   end
 
   def me(_, %{context: %{current_user: current_user}}), do: {:ok, current_user}
+
+  def update_user(args, %{context: %{current_user: user}}) do
+    user_data = args[:input] || %{}
+
+    case User.update_user(user, user_data) do
+      {:ok, user} ->
+        {:ok, user}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect(changeset)
+
+        {:error,
+         message: "There was an error udpating the user",
+         code: 409,
+         errors: translate_errors(changeset)}
+    end
+  end
 
   def favorite_photos(args, %{context: %{current_user: user}}) do
     page = args[:page] || 1

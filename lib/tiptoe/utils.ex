@@ -18,4 +18,16 @@ defmodule TipToe.Utils do
       {String.to_atom(String.downcase(order)), String.to_atom(field)}
     end)
   end
+
+  def translate_errors(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, &translate_error/1)
+  end
+
+  defp translate_error({msg, opts}) do
+    if count = opts[:count] do
+      Gettext.dngettext(TipToeWeb.Gettext, "errors", msg, msg, count, opts)
+    else
+      Gettext.dgettext(TipToeWeb.Gettext, "errors", msg, opts)
+    end
+  end
 end

@@ -22,13 +22,13 @@ defmodule TipToe.User do
     field(:password_reset_code, :string)
     field(:first_login, :boolean, default: true)
     field(:img_bucket, :string)
-    field(:gender, Ecto.Enum, values: [:male, :female])
+    field(:gender, :string)
     field(:user_type, Ecto.Enum, values: [:consumer, :model])
     field(:avatar_url, :string, virtual: true)
 
     timestamps()
 
-    has_one(:model, Model)
+    has_one(:model, Model, on_replace: :update)
     has_many(:rooms, Room)
     has_many(:favorites, Favorite)
     has_many(:liked_photos, through: [:favorites, :photo])
@@ -74,6 +74,19 @@ defmodule TipToe.User do
 
   def get_user!(id) do
     Repo.get!(__MODULE__, id)
+  end
+
+  def update_user(%__MODULE__{} = user, attrs) do
+    case is_map(attrs.model) do
+      true ->
+        Repo.preload(user, :model)
+        |> changeset(attrs)
+        |> put_assoc(:model, attrs.model)
+
+      _ ->
+        changeset(user, attrs)
+    end
+    |> Repo.update()
   end
 
   def random do

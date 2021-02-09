@@ -2,6 +2,7 @@ defmodule TipToeWeb.Resolvers.Auth do
   alias TipToe.Repo
   alias TipToe.User
   import Bcrypt, only: [verify_pass: 2]
+  import TipToe.Utils, only: [translate_errors: 1]
 
   def register(args, _info) do
     input = args[:input] || %{}
@@ -14,8 +15,6 @@ defmodule TipToeWeb.Resolvers.Auth do
         {:ok, response}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
-
         {:error, message: "There was an error", code: 409, errors: translate_errors(changeset)}
     end
   end
@@ -52,17 +51,5 @@ defmodule TipToeWeb.Resolvers.Auth do
       data: user |> User.with_avatar_url(),
       token: token
     }
-  end
-
-  defp translate_errors(changeset) do
-    Ecto.Changeset.traverse_errors(changeset, &translate_error/1)
-  end
-
-  defp translate_error({msg, opts}) do
-    if count = opts[:count] do
-      Gettext.dngettext(TipToeWeb.Gettext, "errors", msg, msg, count, opts)
-    else
-      Gettext.dgettext(TipToeWeb.Gettext, "errors", msg, opts)
-    end
   end
 end

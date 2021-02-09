@@ -132,7 +132,7 @@ defmodule TipToeWeb.GraphQL.Schema do
     field :update_user, non_null(:user) do
       arg(:input, non_null(:update_user_input))
       middleware(Authenticate)
-      # resolve(&TipToeWeb.Resolvers.User.update_user/2)
+      resolve(&TipToeWeb.Resolvers.User.update_user/2)
     end
 
     field :delete_user, non_null(:delete_user_response) do
@@ -268,10 +268,10 @@ defmodule TipToeWeb.GraphQL.Schema do
     field(:bio, :string)
     field(:photos, list_of(:photo))
     field(:user, :user)
-    field(:facebook_url, :string)
-    field(:twitter_url, :string)
-    field(:instagram_url, :string)
-    field(:youtube_url, :string)
+    field(:facebook, :string)
+    field(:twitter, :string)
+    field(:instagram, :string)
+    field(:youtube, :string)
     field(:photos_count, :integer)
     field(:followers_count, :integer)
     field(:followed_by_me, :boolean)
@@ -434,9 +434,9 @@ defmodule TipToeWeb.GraphQL.Schema do
 
   input_object :model_input do
     field(:name, non_null(:string))
-    field(:stage_name, non_null(:string))
+    # field(:stage_name, non_null(:string))
     field(:poster, :string)
-    field(:img_bucket, non_null(:string))
+    # field(:img_bucket, non_null(:string))
     field(:bio, :string)
     field(:facebook, :string)
     field(:twitter, :string)
@@ -470,6 +470,9 @@ defmodule TipToeWeb.GraphQL.Schema do
     field(:telephone, :string)
     field(:avatar, :string)
     field(:img_bucket, :string)
+    field(:gender, :string)
+    field(:user_type, :string)
+    field(:model, :model_input)
   end
 
   input_object :login_input do
