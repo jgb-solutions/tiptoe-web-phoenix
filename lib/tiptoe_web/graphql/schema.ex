@@ -129,6 +129,12 @@ defmodule TipToeWeb.GraphQL.Schema do
     end
 
     # Users
+    field :verify_user_email, non_null(:verify_user_email_response) do
+      arg(:input, non_null(:verify_user_email_input))
+
+      resolve(&TipToeWeb.Resolvers.User.verify_user_email/2)
+    end
+
     field :update_user, non_null(:user) do
       arg(:input, non_null(:update_user_input))
       middleware(Authenticate)
@@ -367,12 +373,20 @@ defmodule TipToeWeb.GraphQL.Schema do
     field(:order, non_null(:string))
   end
 
+  input_object :verify_user_email_input do
+    field(:email, non_null(:string))
+  end
+
   object :facebook_login_url do
     field(:url, non_null(:string))
   end
 
   object :logout_response do
     field(:success, :boolean)
+  end
+
+  object :verify_user_email_response do
+    field(:exists, :boolean)
   end
 
   object :search_results do
@@ -434,7 +448,7 @@ defmodule TipToeWeb.GraphQL.Schema do
 
   input_object :model_input do
     field(:name, non_null(:string))
-    # field(:stage_name, non_null(:string))
+    field(:stage_name, non_null(:string))
     field(:poster, :string)
     # field(:img_bucket, non_null(:string))
     field(:bio, :string)
@@ -459,7 +473,8 @@ defmodule TipToeWeb.GraphQL.Schema do
     field(:password, non_null(:string))
     field(:gender, non_null(:gender))
     field(:user_type, non_null(:user_type))
-    field(:telephone, :string)
+    field(:telephone, non_null(:string))
+    field(:model, :model_input)
   end
 
   input_object :update_user_input do

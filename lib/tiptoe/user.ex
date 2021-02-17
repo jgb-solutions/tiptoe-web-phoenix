@@ -22,8 +22,8 @@ defmodule TipToe.User do
     field(:password_reset_code, :string)
     field(:first_login, :boolean, default: true)
     field(:img_bucket, :string)
-    field(:gender, :string)
     field(:user_type, Ecto.Enum, values: [:consumer, :model])
+    field(:gender, Ecto.Enum, values: [:male, :female, :other])
     field(:avatar_url, :string, virtual: true)
 
     timestamps()

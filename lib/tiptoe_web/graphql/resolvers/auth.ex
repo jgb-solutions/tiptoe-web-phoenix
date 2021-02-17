@@ -7,11 +7,12 @@ defmodule TipToeWeb.Resolvers.Auth do
   def register(args, _info) do
     input = args[:input] || %{}
 
+    IO.inspect(input)
+
     case User.register(input) do
       {:ok, user} ->
         token = generate_token_for(user)
         response = make_response(user, token)
-
         {:ok, response}
 
       {:error, %Ecto.Changeset{} = changeset} ->

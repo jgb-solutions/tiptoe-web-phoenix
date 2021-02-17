@@ -176,4 +176,17 @@ defmodule TipToeWeb.Resolvers.User do
 
     {:ok, %{success: status}}
   end
+
+  def verify_user_email(%{input: %{email: email}} = _args, _info) do
+    exists =
+      case Repo.get_by(User, email: email) do
+        %User{} = _user ->
+          true
+
+        nil ->
+          false
+      end
+
+    {:ok, %{exists: exists}}
+  end
 end
