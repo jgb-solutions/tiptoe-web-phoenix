@@ -1,6 +1,7 @@
 defmodule TipToeWeb.Resolvers.Auth do
   alias TipToe.Repo
   alias TipToe.User
+  alias TipToe.Model
   import Bcrypt, only: [verify_pass: 2]
   import TipToe.Utils, only: [translate_errors: 1]
 
@@ -11,8 +12,14 @@ defmodule TipToeWeb.Resolvers.Auth do
 
     case User.register(input) do
       {:ok, user} ->
+        if Map.has_key?(input, :model) do
+          Model.create(input.model)
+        end
+
         token = generate_token_for(user)
+
         response = make_response(user, token)
+
         {:ok, response}
 
       {:error, %Ecto.Changeset{} = changeset} ->

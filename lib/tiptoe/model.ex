@@ -9,6 +9,7 @@ defmodule TipToe.Model do
   alias TipToe.Room
   alias TipToe.Model
   alias TipToe.Follower
+  alias TipToe.Utils
 
   @default_poster_url "https://img-storage-prod.tiptoe.app/placeholders/model-placeholder.jpg"
 
@@ -40,8 +41,26 @@ defmodule TipToe.Model do
   @doc false
   def changeset(%__MODULE__{} = model, attrs) do
     model
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [
+      :user_id,
+      :stage_name,
+      :hash,
+      :poster,
+      :bio,
+      :facebook,
+      :twitter,
+      :instagram,
+      :youtube
+    ])
+    |> validate_required([:stage_name, :hash, :user_id])
+  end
+
+  def create(attrs \\ %{}) do
+    %__MODULE__{
+      hash: Utils.get_hash(__MODULE__)
+    }
+    |> changeset(attrs)
+    |> Repo.insert()
   end
 
   def random do

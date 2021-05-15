@@ -447,10 +447,9 @@ defmodule TipToeWeb.GraphQL.Schema do
   end
 
   input_object :model_input do
-    field(:name, non_null(:string))
     field(:stage_name, non_null(:string))
     field(:poster, :string)
-    # field(:img_bucket, non_null(:string))
+    # field(:img_bucket, :string)
     field(:bio, :string)
     field(:facebook, :string)
     field(:twitter, :string)

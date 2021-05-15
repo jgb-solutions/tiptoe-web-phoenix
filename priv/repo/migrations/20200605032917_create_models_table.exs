@@ -3,7 +3,6 @@ defmodule TipToe.Repo.Migrations.CreateModels do
 
   def change do
     create table(:models) do
-      add :name, :string, null: false
       add :stage_name, :string, null: false
       add :hash, :integer, unique: true, null: false
       add :poster, :string

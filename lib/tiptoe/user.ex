@@ -49,7 +49,7 @@ defmodule TipToe.User do
       :gender,
       :user_type
     ])
-    |> validate_required([:name, :email, :password])
+    |> validate_required([:name, :email, :password, :gender, :user_type])
     |> unsafe_validate_unique(:email, Repo)
     # |> validate_length(:name, min: 3, max: 10)
     # |> validate_length(:password, min: 5, max: 20)
