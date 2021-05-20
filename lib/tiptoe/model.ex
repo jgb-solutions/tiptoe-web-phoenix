@@ -14,7 +14,6 @@ defmodule TipToe.Model do
   @default_poster_url "https://img-storage-prod.tiptoe.app/placeholders/model-placeholder.jpg"
 
   schema "models" do
-    field :name, :string, null: false
     field :stage_name, :string, null: false
     field :hash, :integer, unique: true, null: false
     field :poster, :string

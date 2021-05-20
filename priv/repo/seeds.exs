@@ -111,7 +111,6 @@ Enum.each(1..20, fn _i ->
   username = Faker.Internet.user_name()
 
   Repo.insert!(%Model{
-    name: Faker.Person.name(),
     stage_name: Faker.Person.name(),
     poster: "models/image-" <> Integer.to_string(Enum.random(1..66)) <> ".png",
     hash: Utils.get_hash(Model),
