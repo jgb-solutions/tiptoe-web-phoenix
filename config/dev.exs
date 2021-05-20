@@ -2,8 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :tiptoe, TipToe.Repo,
-  username: System.get_env("DB_USER_NAME"),
-  password: System.get_env("DB_PASS"),
+  username: System.get_env("DB_USER_NAME") || "jey",
+  password: System.get_env("DB_PASS") || "23jim0488",
   database: System.get_env("DB_NAME") || "tiptoe_dev",
   hostname: System.get_env("DB_HOST") || "localhost",
   show_sensitive_data_on_connection_error: true,

@@ -18,6 +18,6 @@ defmodule TipToe.Repo.Migrations.CreateModels do
       timestamps()
     end
 
-    create index(:models, [:name, :stage_name, :hash])
+    create index(:models, [:stage_name, :hash])
   end
 end
